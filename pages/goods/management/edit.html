@@ -1,14 +1,28 @@
 {% extends "osr-style/pages/based/based.html" %}
-{% block title %}{{_("添加商品-")}}{% endblock %}
+{% block title %}{{_("添加|编辑商品-")}}{% endblock %}
 {% block content %}
 <!-- Date Picker -->
 <link href="/theme/static/css/bootstrap-datetimepicker.min.css?v={{g.site_global.site_config.STATIC_FILE_VERSION}}" rel="stylesheet" type="text/css" />
 <data id="goods_id" content="{{data.goods_id}}" hidden></data>
-<div id="app" class="row osr-edit-page" v-cloak>
-    <section class="osr-panel">
+
+<div id="app" v-cloak>
+    <div class="row osr-edit-page">
+        <div class="col-md-12 osr-col-xs-12">
+            <section class="osr-panel">
+              <header class="panel-heading tab-bg-dark-navy-blue osr-panel-heading">
+                  <strong>{{_("添加/编辑商品")}}</strong>
+                  <a class="pull-right"
+                     href="/goods/setting">
+                        <i class="fa fa-arrow-circle-left"></i>
+                      {{_("返回")}}
+                  </a>
+              </header>
+              <div class="panel-body">
+
             <!--商品类别-->
+            <label>{{_("大类")}}</label>
             <div class="input-group">
-                <select id="goods_type" class="form-control osr-form-control" name="goods_type" @change="switch_category($event.target.value)">
+                <select id="goods_type" class="form-control osr-form-control" name="goods_type" @change="switch_type($event.target.value)">
                   <option  v-if="goods_type===gt._id" v-for="gt in goods_types" v-bind:value =gt._id selected>{[gt.name]} </option>
                   <option  v-if="goods_type!==gt._id" v-for="gt in goods_types" v-bind:value =gt._id>{[gt.name]} </option>
                 </select>
@@ -16,7 +30,9 @@
                   <i class="fa fa-cog"></i>
                 </a>
             </div>
+            <br>
             <!--细分分类-->
+            <label>{{_("小类")}}</label>
             <div class="input-group">
                 <select id="category" class="form-control osr-form-control" name="category" @change="switch_category($event.target.value)">
                   <option  v-if="category===cg._id" v-for="cg in categorys" v-bind:value =cg._id selected>{[cg.name]} </option>
@@ -26,17 +42,64 @@
                   <i class="fa fa-cog"></i>
                 </a>
             </div>
+        <br>
+
+        <!--属性-->
+        <div class="form-group form-inline">
+            <label class="control-label">{{_('属性')}}&nbsp;</label>
+            <p>
+              <button v-on:click="add_property_input()" class="btn btn-sm osr-btn btn-success">
+                 {{_("添加")}}
+             </button>
+             </p>
+
+            <data id="property_input"> </data>
+            <div v-for="v,index in conf.value" class="form-group">
+                  <input  class="form-control osr-input" type="text" :value="v.color" />&nbsp;
+                  <input  class="form-control osr-input" type="text" :value="v.size" />&nbsp;
+                  <input  class="form-control osr-input" type="text" :value="v.unit_price" />&nbsp;
+                  <input  class="form-control osr-input" type="text" :value="v.quantity" />
+                <br><br>
+                <button v-on:click="remove_input(conf.key+'_input_'+index)"   class="btn-sm osr-btn btn btn-default">
+                  </button>
+                &nbsp;<br><br>
+            </div>
+        </div>
+        <br>
+        <!--成分-->
+        <div class="form-group form-inline">
+            <label class="control-label">{{_('成分')}}&nbsp;</label>
+            <p>
+              <button v-on:click="add_cloth_input" class="btn btn-sm osr-btn btn-success">
+                 {{_("添加")}}
+             </button>
+             </p>
+
+            <data id="cloth_input"> </data>
+            <div :id="'cloth_input_'+index" v-for="v,index in conf.value"  class="form-group">
+                  <input  class="form-control osr-input" type="text" :value="v.name" />&nbsp;
+                  <input  class="form-control osr-input" type="text" :value="v.content" />
+                <br><br>
+                  <button v-on:click="remove_input(conf.key+'_input_'+index)"   class="btn-sm osr-btn btn btn-default">
+                  </button>
+                &nbsp;<br><br>
+            </div>
+        </div>
+        <br>
             <!--厂家-->
+            <label>{{_("商家")}}</label>
             <div class="input-group">
-                <select id="business" class="form-control osr-form-control" name="business" @change="switch_category($event.target.value)">
-                  <option  v-if="business_id===cg._id" v-for="bs in businesses" v-bind:value =cg._id selected>{[bs.name]} </option>
-                  <option  v-if="business_id!==cg._id" v-for="bs in businesses" v-bind:value =cg._id>{[bs.name]} </option>
+                <select id="business" class="form-control osr-form-control" name="business" @change="switch_business($event.target.value)">
+                  <option  v-if="business===bs._id" v-for="bs in businesses" v-bind:value =bs._id selected>{[bs.name]} </option>
+                  <option  v-if="business!==bs._id" v-for="bs in businesses" v-bind:value =bs._id>{[bs.name]} </option>
                 </select>
                 <a class="btn osr-btn-link" href="/content/category?type=post&ps={{data.status}}&peditor={{data.editor}}&pid={{data.id}}">
                   <i class="fa fa-cog"></i>
                 </a>
             </div>
+        <br>
             <!--上市日期-->
+          <label>{{_("上市日期")}}</label>
             <div class="input-group">
                 <select id="time_to_market" class="form-control osr-form-control" name="time_to_market" @change="switch_category($event.target.value)">
                   <option  v-if="time_to_market_id===tm._id" v-for="tm in time_to_markets" v-bind:value =tm._id selected>{[tm.name]} </option>
@@ -46,9 +109,10 @@
                   <i class="fa fa-cog"></i>
                 </a>
             </div>
-
+        <br>
             <!--适合性别-->
-            <label class="control-label">{{_('适合性别')}}&nbsp;</label>
+            <div class="form-group form-inline">
+                <label class="control-label">{{_('性别')}}&nbsp;</label>
                 <div class="radio radio-success">
                     <input  v-if="goods.gender=='m'" id="m" class="form-radio-input" type="radio" name="gender"
                            v-model="goods.gender" value="m" checked>
@@ -72,45 +136,14 @@
                            v-model="goods.gender" value="n">
                     <label class="form-radio-label" for="n"> {{_("中性")}} </label>
                 </div>
-
-        <!--成分-->
-        <p>
-          <button v-on:click="add_cloth_input" class="btn btn-sm osr-btn btn-success">
-             {{_("添加")}}
-         </button>
-         </p>
-
-        <data id="cloth_input"> </data>
-        <div :id="'cloth_input_'+index" v-for="v,index in conf.value"  class="form-group">
-              <input  class="form-control osr-input" type="text" :value="v.name" />
-              <input  class="form-control osr-input" type="text" :value="v.content" />
-              <i v-on:click="remove_tag(conf.key+'_input_'+index)" class="fa fa-sm osr-pointer pull-right osr-form-control-feedback osr-color-danger fa fa-close">
-              </i>
-        </div>
-
-        <!--属性-->
-        <p>
-          <button v-on:click="add_property_input()" class="btn btn-sm osr-btn btn-success">
-             {{_("添加")}}
-         </button>
-         </p>
-
-        <data id="property_input"> </data>
-        <div v-for="v,index in conf.value" class="form-group">
-              <input  class="form-control osr-input" type="text" :value="v.color" />
-              <input  class="form-control osr-input" type="text" :value="v.size" />
-              <input  class="form-control osr-input" type="text" :value="v.unit_price" />
-              <input  class="form-control osr-input" type="text" :value="v.quantity" />
-              <i v-on:click="remove_tag(conf.key+'_input_'+index)" class="fa fa-sm osr-pointer pull-right osr-form-control-feedback osr-color-danger fa fa-close">
-              </i>
-        </div>
+            </div>
+        <br>
 
         <!--备注-->
         <div class="form-group">
             <label >{{_('备注')}}</label>
             <textarea class="form-control" style="height:100px"  minlength="0" maxlength="100"
                     placeholder="{{_('备注!')}}" v-model="goods.introduction" :value="goods.introduction">
-
             </textarea>
         </div>
         <div class="btn-group">
@@ -118,9 +151,11 @@
                 {{_('保存')}}
             </button>
         </div>
-     </section>
+        </div>
+       </section>
+      </div>
+    </div>
 </div>
-
 <script src="/theme/static/js/plugins/bs-datetimepicker/bootstrap-datetimepicker.min.js?v={{g.site_global.site_config.STATIC_FILE_VERSION}}" type="text/javascript"></script>
 <script>
 
@@ -133,8 +168,12 @@
                 cloth:{}
             },
             goods_types:{},
+            goods_type:null,
             categorys:{},
+            category:null,
             businesses:{},
+            business:null,
+
             time_to_markets:{},
             conf:{}
 
@@ -144,15 +183,71 @@
     // 页面一加载完就自动执行
     var goods_id = null;
     $(document).ready(function(){
+
+        get_types();
         var goods_id = $("#goods_id").attr("content");
         if(goods_id){
             get_goods();
         }
     });
 
-    function get_other_info(){
 
+    function get_types(){
+         var result = osrHttp("GET","/api/plug/goods/type", {}, args={not_prompt:true});
+         result.then(function (r) {
+            vue.goods_types = r.data.types;
+            if(vue.goods_types.length){
+                vue.goods_type = vue.goods_types[0]._id;
+                get_categorys();
+                get_businesses();
+            }
+         });
     }
+
+    function get_categorys(){
+        var data = {goods_type_id:vue.goods_type};
+         var result = osrHttp("GET","/api/plug/goods/category", data, args={not_prompt:true});
+
+         result.then(function (r) {
+            vue.categorys = r.data.categorys;
+            if(vue.categorys.length){
+                vue.category = vue.categorys[0]._id;
+            }else{
+                vue.category = "";
+            }
+
+         });
+    }
+
+    function get_businesses(){
+        var data = {goods_type_id:vue.goods_type};
+         var result = osrHttp("GET","/api/plug/goods/business", data, args={not_prompt:true});
+
+         result.then(function (r) {
+            vue.businesses = r.data.businesses;
+            if(vue.businesses.length){
+                vue.business = vue.businesses[0]._id;
+            }else{
+                vue.business = "";
+            }
+
+         });
+    }
+
+    function switch_type(value){
+        vue.goods_type = value;
+        get_categorys();
+        get_businesses();
+    }
+
+    function switch_category(value){
+        vue.category = value;
+    }
+
+    function switch_business(value){
+        vue.business = value;
+    }
+
 
     function add_goods(){
         data = {
@@ -182,10 +277,10 @@
     function add_cloth_input(){
         var id = osr_guid();
         html = '<div id="'+id+ '" class="list_dict form-group from-inline form-icon form-feedback">'
-                +'<input class="form-control osr-input" type="text" placeholder="成分名称" />'
+                +'<input class="form-control osr-input" type="text" placeholder="成分名称" />&nbsp;'
                 +'<input class="form-control osr-input" type="text" placeholder="%(1-100)" />'
-                +'<i onclick="remove_input('+"'"+id+ "'"+ ')" class="fa fa-sm osr-pointer pull-right osr-form-control-feedback osr-color-danger fa fa-close"></i>'
-                +'</div>';
+                +'<br><br><button onclick="remove_input('+"'"+id+ "'"+ ')" class="btn-sm osr-btn btn btn-danger">删除</button>'
+                +'&nbsp;<br><br></div>';
         $("#cloth_input").before(html);
 
     }
@@ -193,12 +288,12 @@
     function add_property_input(){
         var id = osr_guid();
         html = '<div id="'+id+ '" class="list_dict form-group from-inline form-icon form-feedback">'
-                +'<input class="form-control osr-input" type="text" placeholder="颜色" />'
-                +'<input class="form-control osr-input" type="text" placeholder="尺寸" />'
-                +'<input class="form-control osr-input" type="text" placeholder="单价" />'
+                +'<input class="form-control osr-input" type="text" placeholder="颜色" />&nbsp;'
+                +'<input class="form-control osr-input" type="text" placeholder="尺寸" />&nbsp;'
+                +'<input class="form-control osr-input" type="text" placeholder="单价" />&nbsp;'
                 +'<input class="form-control osr-input" type="text" placeholder="数量" />'
-                +'<i onclick="remove_input('+"'"+id+ "'"+ ')" class="fa fa-sm osr-pointer pull-right osr-form-control-feedback osr-color-danger fa fa-close"></i>'
-                +'</div>';
+                +'<br><br><button onclick="remove_input('+"'"+id+ "'"+ ')" class="btn-sm osr-btn btn btn-danger">删除</button>'
+                +'&nbsp;<br><br></div>';
         $("#property_input").before(html);
 
     }
