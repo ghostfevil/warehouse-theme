@@ -1,0 +1,162 @@
+{% extends "osr-style/pages/based/based.html" %}
+{% block title %}{{_('商品细分类')}}-{% endblock %}
+{% block content %}
+<div id="app" v-cloak>
+
+    <div class="row osr-edit-page">
+        <div class="col-md-12 osr-col-xs-12">
+            <section class="osr-panel">
+              <header class="panel-heading tab-bg-dark-navy-blue osr-panel-heading">
+                  <strong>{{_("商品分类")}}</strong>
+                  <a class="pull-right"
+                     href="/goods/setting">
+                        <i class="fa fa-arrow-circle-left"></i>
+                      {{_("返回")}}
+                  </a>
+              </header>
+
+              <div class="panel-body">
+                  <div class="text-center">
+
+                    <div class="input-group form-group">
+                        <select id="type" class="form-control osr-form-control" name="type" @change="switch_type($event.target.value)">
+                          <option  v-if="curren_type._id===type._id" v-for="type in types" v-bind:value =type._id selected>{[type.name]} </option>
+                          <option  v-if="curren_type._id!==type._id" v-for="type in types" v-bind:value =type._id>{[type.name]} </option>
+                        </select>
+                        <a class="btn osr-btn-link" href="/goods/type">
+                          <i class="fa fa-cog"></i>
+                        </a>
+                    </div>
+                      <p>
+
+                    <div v-for="category in categorys" class="form-group">
+                        <label>
+                        <input name="name" type="text" class="form-control osr-input" v-model="category.name"
+                          data-bv-notempty-message="{{_('不能为空')}}" placeholder="{{_('分类名称')}}" required/>
+                        </label>
+                        <button v-on:click="update(category._id, category.name)" class="btn-sm osr-btn btn btn-info">{{_("保存")}}</button>
+                        <button v-on:click="warning_modal(null, 'del', category._id)" class="btn-sm osr-btn btn btn-danger" >{{_("删除")}}</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                        <input name="new_name" type="text" class="form-control osr-input" v-model="new_category"
+                               placeholder="{{_('分类名称')}}" data-bv-notempty-message="{{_('不能为空')}}" required/>
+                        </label>
+                        <button v-on:click="add()" class="btn-sm osr-btn btn btn-success osr-submit-btn">{{_("添加")}}</button>
+                         <button class="btn-sm osr-btn btn btn-default disabled">{{_("删除")}}</button>
+                    </div>
+                 </div>
+              </div>
+            </section>
+        </div>
+    </div>
+</div>
+<script>
+    var vue = new Vue({
+      el: '#app',
+      delimiters:['{[', ']}'],
+      data:{
+        types:[],
+        curren_type:null,
+        categorys:[],
+        new_category:"",
+        single_type:false
+      },
+      methods: {show_btn:show_btn}
+    })
+
+    // 加载完页面执行
+    $(document).ready(function(){
+        get_types();
+    })
+
+    function show_btn(id){
+        if( $("#"+id).hasClass("show") ){
+            // 执行隐藏
+            $("#"+id).hide().removeClass("show");
+            // 其他
+        }else{
+            // 显示
+            $("#"+id).show().addClass("show");
+        }
+    }
+
+    function get_types(){
+         var result = osrHttp("GET","/api/plug/goods/type", {}, args={not_prompt:true});
+         result.then(function (r) {
+            vue.types = r.data.types;
+            if(!vue.curren_type){
+                vue.curren_type = vue.types[0]._id;
+                get_categorys();
+            }
+         });
+    }
+
+    function get_categorys(){
+        var data = {goods_type_id:vue.curren_type};
+         var result = osrHttp("GET","/api/plug/goods/category", data, args={not_prompt:true});
+
+         result.then(function (r) {
+            vue.categorys = r.data.categorys;
+         });
+    }
+
+
+    function add(){
+        formValidate();
+        var d = {
+            name:vue.new_category,
+            goods_type_id:vue.curren_type
+        }
+        // 提交数据
+
+        var result = osrHttp("POST", "/api/plug/goods/category", d);
+        result.then(function (r) {
+            if (r.status=="success" && r.data.msg_type=="s"){
+                get_categorys();
+                vue.new_category = "";
+            }
+        });
+
+    }
+
+    function update(id, name){
+        formValidate();
+        var d = {
+                 name:name,
+                 goods_type_id:vue.curren_type,
+                 id:id
+        }
+        // 提交数据
+        var result = osrHttp("PUT", "/api/plug/goods/category", d);
+        result.then(function (r) {
+            if (r.status=="success" && r.data.msg_type=="s"){
+                get_categorys();
+            }
+        });
+
+    }
+
+    function del(id){
+
+        var d = {
+                 ids:JSON.stringify([id])
+        }
+        // 提交数据
+        var result = osrHttp("DELETE", "/api/plug/goods/category", d);
+        result.then(function (r) {
+            if (r.status=="success" && r.data.msg_type=="s"){
+                get_categorys();
+            }
+        });
+    }
+
+    function switch_type(value){
+        vue.curren_type = value;
+        get_categorys();
+    }
+
+
+</script>
+{% endblock %}

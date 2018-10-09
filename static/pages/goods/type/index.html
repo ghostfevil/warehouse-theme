@@ -1,0 +1,127 @@
+{% extends "osr-style/pages/based/based.html" %}
+{% block title %}{{_('商品分类')}}-{% endblock %}
+{% block content %}
+<div id="app" v-cloak>
+
+    <div class="row osr-edit-page">
+        <div class="col-md-12 osr-col-xs-12">
+            <section class="osr-panel">
+              <header class="panel-heading tab-bg-dark-navy-blue osr-panel-heading">
+                  <strong>{{_("商品大类")}}</strong>
+                  <a class="pull-right"
+                     href="/goods/setting">
+                        <i class="fa fa-arrow-circle-left"></i>
+                      {{_("返回")}}
+                  </a>
+              </header>
+
+              <div class="panel-body">
+                  <div class="text-center">
+
+                    <div v-for="type in types" class="form-group">
+                        <label>
+                        <input name="name" type="text" class="form-control osr-input" v-model="type.name"
+                          data-bv-notempty-message="{{_('不能为空')}}" placeholder="{{_('分类名称')}}" required/>
+                        </label>
+                        <button v-on:click="update(type._id, type.name)" class="btn-sm osr-btn btn btn-info">{{_("保存")}}</button>
+                        <button v-on:click="warning_modal(null, 'del', type._id)" class="btn-sm osr-btn btn btn-danger" >{{_("删除")}}</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                        <input name="new_name" type="text" class="form-control osr-input" v-model="new_type"
+                               placeholder="{{_('分类名称')}}" data-bv-notempty-message="{{_('不能为空')}}" required/>
+                        </label>
+                        <button v-on:click="add()" class="btn-sm osr-btn btn btn-success osr-submit-btn">{{_("添加")}}</button>
+                         <button class="btn-sm osr-btn btn btn-default disabled">{{_("删除")}}</button>
+                    </div>
+                 </div>
+              </div>
+            </section>
+        </div>
+    </div>
+</div>
+<script>
+    var vue = new Vue({
+      el: '#app',
+      delimiters:['{[', ']}'],
+      data:{
+        types:[],
+        new_type:"",
+      },
+      methods: {show_btn:show_btn}
+    })
+
+    // 加载完页面执行
+    $(document).ready(function(){
+        get_type();
+    })
+
+    function show_btn(id){
+        if( $("#"+id).hasClass("show") ){
+            // 执行隐藏
+            $("#"+id).hide().removeClass("show");
+            // 其他
+        }else{
+            // 显示
+            $("#"+id).show().addClass("show");
+        }
+    }
+    function get_type(){
+         var result = osrHttp("GET","/api/plug/goods/type", {}, args={not_prompt:true});
+         result.then(function (r) {
+            vue.types = r.data.types;
+         });
+    }
+
+
+    function add(){
+        formValidate();
+        var d = {
+            name:vue.new_type
+        }
+        // 提交数据
+
+        var result = osrHttp("POST", "/api/plug/goods/type", d);
+        result.then(function (r) {
+            if (r.status=="success" && r.data.msg_type=="s"){
+                get_type();
+                vue.new_type = "";
+            }
+        });
+
+    }
+
+    function update(id, name){
+        formValidate();
+        var d = {
+                 name:name,
+                 id:id
+        }
+        // 提交数据
+        var result = osrHttp("PUT", "/api/plug/goods/type", d);
+        result.then(function (r) {
+            if (r.status=="success" && r.data.msg_type=="s"){
+                get_type();
+            }
+        });
+
+    }
+
+    function del(id){
+
+        var d = {
+                 ids:JSON.stringify([id])
+        }
+        // 提交数据
+        var result = osrHttp("DELETE", "/api/plug/goods/type", d);
+        result.then(function (r) {
+            if (r.status=="success" && r.data.msg_type=="s"){
+                get_type();
+            }
+        });
+    }
+
+
+</script>
+{% endblock %}
