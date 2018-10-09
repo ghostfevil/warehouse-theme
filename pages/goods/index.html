@@ -1,10 +1,135 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "osr-style/pages/based/based.html" %}
+{% block title %}{{_("商品-")}}{% endblock %}
+{% block content %}
+<!-- Date Picker -->
+<div id="app" v-cloak>
+    <div class="row osr-edit-page">
+        <div class="col-md-12 osr-col-xs-12">
+            <section class="osr-panel">
+                <ul class="osr-list-group">
+                    <li class="osr-list-group-item have-img" v-for="gd in goods">
+                         <!-- 图片-->
+                           <a class="wrap-img pull-right" target="_blank" ></a>
+                         <!-- //图片-->
+                          <div class="item-content">
+                              <div class="list-author">
+                                  <a v-if="gd.total>5" class="osr-color-success">
+                                      ID:&nbsp{[gd.customize_id]}
+                                  </a>
+                                  <a v-else class="osr-color-warning">
+                                      ID:&nbsp{[gd.customize_id]}
+                                  </a>
 
-</body>
-</html>
+                                  <span  v-if="gd.gender=='m'" class="fa fa-mars osr-fa-gender-m" ></span>
+                                  <span  v-else-if="gd.gender=='f'" class="fa fa-venus osr-fa-gender-f"></span>
+                                  <span v-if="gd.update_time" class="osr-date">
+                                      <span>
+                                          <i class="fa fa-refresh" title="{{_('更新时间')}}"></i>
+                                          <i class="fa fa-clock-o"></i>&nbsp;{[gd.update_time | formatDate]}
+                                      </span>
+                                  </span>
+                              </div>
+                                <!--title-->
+                              <a target="_blank">
+                                  <span class="osr-color-default" v-if="gd.category_id==category._id" v-for="category in categorys">
+                                      {{_('分类')}}: {[category.name]}
+                                  </span>
+                                  <span class="osr-color-success">
+                                      {{_('库存')}}: {[gd.total]}
+                                  </span>
+                                  <span class="osr-color-info">
+                                      {{_('颜色')}}: {[gd.colors.length]}
+                                  </span>
+                                 <span class="osr-color-info">
+                                      {{_('尺寸')}}: {[gd.sizes.length]}
+                                  </span>
+
+                              </a>
+                                <!--title-->
+
+                              <!--摘要-->
+                              <div class="osr-text">
+                                  <span v-if="gd.business_id==business._id" v-for="business in businesses">
+                                      {{_('品牌/上级商家')}}:&nbsp{[business.name]}
+                                  </span>
+                                  <br>
+                                  <span >{[gd.introduction]}</span>
+                              </div>
+                                <!--摘要-->
+                          </div>
+                     </li>
+                </ul>
+            </section>
+      </div>
+    </div>
+</div>
+<script>
+
+    var vue = new Vue({
+      el: '#app',
+      delimiters:['{[', ']}'],
+      data:{
+            goods:[],
+            goods_type_id:null,
+            goods_types:{},
+            categorys:{},
+            businesses:{},
+      },
+       filters: {
+            formatDate: function (time) {
+              return irrformatDate(time, "yyyy-MM-dd hh:mm");
+            }
+      }
+    })
+
+    // 页面一加载完就自动执行
+    var goods_id = null;
+    $(document).ready(function(){
+
+        // 获取商品信息
+        get_goods();
+        vue.goods_type_id = "5bbc111776c9f41c9c93e2aa"
+
+    });
+
+    function get_goods(){
+        var result = osrHttp("GET","/api/plug/goods", args={not_prompt:true});
+        result.then(function (r) {
+              vue.goods = r.data.goods;
+              get_types();
+        });
+    }
+
+    function get_types(){
+         var result = osrHttp("GET","/api/plug/goods/type", {}, args={not_prompt:true});
+         result.then(function (r) {
+            vue.goods_types = r.data.types;
+            if(vue.goods_types.length){
+                get_categorys();
+            }
+         });
+    }
+
+    function get_categorys(){
+        var data = {goods_type_id:vue.goods_type_id};
+         var result = osrHttp("GET","/api/plug/goods/category", data, args={not_prompt:true});
+
+         result.then(function (r) {
+            vue.categorys = r.data.categorys;
+            get_businesses();
+         });
+    }
+
+    function get_businesses(){
+        var data = {goods_type_id:vue.goods_type_id};
+         var result = osrHttp("GET","/api/plug/goods/business", data, args={not_prompt:true});
+
+         result.then(function (r) {
+            vue.businesses = r.data.businesses;
+         });
+    }
+
+
+
+</script>
+{% endblock %}

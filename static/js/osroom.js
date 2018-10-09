@@ -628,3 +628,17 @@ function content_inform(cid, ctype, category, details){
     }
     osrHttp("PUT","/api/inform/content",d);
 }
+
+// 删除数组中元素
+
+function ArrayRemove(arr, val){
+
+  val_index = -1;
+  for(var i = 0; i < arr.length; i++){
+    if(arr[i] == val){
+       var val_index = i;
+    }
+  }
+  if(val_index > -1){arr.splice(val_index,1);}
+  return arr;
+}

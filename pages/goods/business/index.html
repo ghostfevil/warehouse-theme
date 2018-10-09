@@ -1,12 +1,12 @@
 {% extends "osr-style/pages/based/based.html" %}
-{% block title %}{{_('商品细分类')}}-{% endblock %}
+{% block title %}{{_('商家品牌')}}-{% endblock %}
 {% block content %}
 <div id="app" v-cloak>
     <div class="row osr-edit-page">
         <div class="col-md-12 osr-col-xs-12">
             <section class="osr-panel">
               <header class="panel-heading tab-bg-dark-navy-blue osr-panel-heading">
-                  <strong>{{_("商家(厂家)")}}</strong>
+                  <strong>{{_("商家品牌")}}</strong>
                   <a class="pull-right"
                      href="/goods/setting">
                         <i class="fa fa-arrow-circle-left"></i>
@@ -30,7 +30,7 @@
                     <div v-for="business in businesses" class="form-group">
                       <label>
                         <input name="name" type="text" class="form-control osr-input" v-model="business.name"
-                          data-bv-notempty-message="{{_('不能为空')}}" placeholder="{{_('商家名称')}}" required/>
+                          data-bv-notempty-message="{{_('不能为空')}}" placeholder="{{_('商家品牌')}}" required/>
                         <input name="mobile_phone" type="text" class="form-control osr-input" v-model="business.mobile_phone"
                                placeholder="{{_('联系电话')}}" />
                         <input name="addr" type="text" class="form-control osr-input" v-model="business.addr"
@@ -43,7 +43,7 @@
                     <div class="form-group">
                         <label>
                         <input name="new_name" type="text" class="form-control osr-input" v-model="new_business"
-                               placeholder="{{_('商家名称')}}" data-bv-notempty-message="{{_('不能为空')}}" required/>
+                               placeholder="{{_('商家品牌')}}" data-bv-notempty-message="{{_('不能为空')}}" required/>
                         <input name="mobile_phone" type="text" class="form-control osr-input" v-model="mobile_phone"
                                placeholder="{{_('联系电话')}}" />
                         <input name="addr" type="text" class="form-control osr-input" v-model="addr"

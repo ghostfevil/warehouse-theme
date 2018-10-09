@@ -1,0 +1,274 @@
+<!--属性-->
+
+<div v-if="!pr_editing"　class="panel-body">
+    <h4>{{_("颜色与尺寸")}}</h4>
+    <span class="osr-color-success">{[goods.colors.length]}{{_("个色")}} </span>
+    <span v-for="color in goods.colors">
+        {[color]};
+        &nbsp;
+    </span>
+
+    <br>
+    <span class="osr-color-success">{[goods.sizes.length]}{{_("个尺寸")}} </span>
+    <span v-for="size in goods.sizes">
+        {[size]};
+        &nbsp;
+    </span>
+
+    <div class="pull-right">
+        <a class="osr-pointer osr-color-secondary" v-on:click="pack_up_pr_edit()">
+            <i class="fa fa-edit"></i>{{_('编辑')}}
+        </a>
+    </div>
+</div>
+
+<div v-if="pr_editing" class="panel-body">
+    <div class="pull-right">
+        <a class="osr-pointer osr-color-secondary" v-on:click="pack_up_pr_edit()">
+             <i class="fa fa-chevron-up"></i>{{_('收起')}}
+        </a>
+    </div>
+
+    <h4>{{_("颜色属性")}}</h4>
+    <span v-for="color in goods.colors">
+        {[color]}
+        <i v-on:click="del_color(color)" class="osr-pointer osr-color-danger fa fa-close"></i>
+        &nbsp;
+    </span>
+    <div class="form-group">
+        <label>
+        <input name="new_coloe" type="text" class="form-control osr-input" v-model="new_color"
+               placeholder="{{_('颜色')}}" data-bv-notempty-message="{{_('不能为空')}}" required/>
+        </label>
+        <button v-on:click="add_color()" class="btn-sm osr-btn btn btn-success ">{{_("添加")}}</button>
+    </div>
+    <div class="btn-group">
+        <button v-on:click="warning_modal({msg:'{{_('确定修改')}}'}, 'update_property', 'color', 'colors')" class="btn btn-sm osr-btn btn-info">
+            {{_('保存修改')}}
+        </button>
+    </div>
+    <br>
+     <h4>{{_("大小属性")}}</h4>
+    <span v-for="size in goods.sizes">
+        {[size]}
+        <i v-on:click="del_size(size)" class="osr-pointer osr-color-danger fa fa-close"></i>
+        &nbsp;
+    </span>
+
+    <div class="form-group">
+        <label>
+        <input name="new_size" type="text" class="form-control osr-input" v-model="new_size"
+               placeholder="{{_('大小尺寸')}}" data-bv-notempty-message="{{_('不能为空')}}" required/>
+        </label>
+        <button v-on:click="add_size()" class="btn-sm osr-btn btn btn-success">{{_("添加")}}</button>
+    </div>
+    <div class="btn-group">
+        <button v-on:click="warning_modal({msg:'{{_('确定修改')}}'}, 'update_property', 'size', 'sizes')"  class="btn btn-sm osr-btn btn-info">
+            {{_('保存修改')}}
+        </button>
+    </div>
+
+</div>
+<hr>
+<div class="panel-body">
+    <div class="pull-right">
+        <a v-if="pr_other_editing" class="osr-pointer osr-color-secondary" v-on:click="pack_up_pr_other_edit()">
+             <i class="fa fa-chevron-up"></i>{{_('收起')}}
+        </a>
+        <a v-else class="osr-pointer osr-color-secondary" v-on:click="pack_up_pr_other_edit()">
+             <i class="fa fa-edit"></i>{{_('编辑')}}
+        </a>
+    </div>
+
+    <h4>{{_("单价与数量")}}</h4>
+    <div>总库存:
+        <span class="osr-color-default" v-if="goods.total">{[goods.total]}</span>
+        <span class="osr-color-danger" v-else>{[goods.total]}</span>
+    </div>
+    <span v-if="pr_other_editing">
+        单价
+        <label>
+
+            <input name="new_price" type="text" class="form-control osr-input" v-model="unified_price"
+                   placeholder="{{_('单价')}}"/>
+        </label>
+        数量
+        <label>
+            <input name="new_quantity" type="text" class="form-control osr-input" v-model="unified_quantity"
+                   placeholder="{{_('数量')}}"/>
+        </label>
+        <a v-on:click="warning_modal({msg:'{{_('确定一次性修改')}}'}, 'unified_update_other_pr')" class="btn btn-sm osr-btn btn-warning">
+            {{_('统一修改')}}
+        </a>
+        <br>
+    </span>
+    <span v-for="(pr,index) in goods.property">
+        尺寸: <span class="osr-color-default">{[pr.size]}</span>&nbsp;
+        颜色: <span class="osr-color-default">{[pr.color]}</span>&nbsp;
+        <span v-if="!pr_other_editing">
+            单价: <span class="osr-color-default">{[pr.unit_price]}</span>&nbsp;
+            数量: <span class="osr-color-default" v-if="pr.quantity">{[pr.quantity]}</span>
+            <span class="osr-color-danger" v-else>{[pr.quantity]}</span>
+        </span>
+        <span v-else>
+            <br>
+            单价
+            <label>
+
+                <input name="new_price" type="text" class="form-control osr-input" v-model="pr.unit_price" v-value="pr.unit_price"
+                       placeholder="{{_('单价')}}"/>
+            </label>
+            数量
+            <label>
+                <input name="new_quantity" type="text" class="form-control osr-input" v-model="pr.quantity" v-value="pr.quantity"
+                       placeholder="{{_('数量')}}"/>
+            </label>
+
+            <a v-on:click="update_other_pr(index, pr.unit_price, pr.quantity)" class="btn btn-sm osr-btn btn-info">
+                {{_('保存')}}
+            </a>
+            <br>
+        </span>
+        <br>
+    </span>
+    <a v-if="pr_other_editing" class="osr-pointer osr-color-secondary" v-on:click="pack_up_pr_other_edit()">
+        <i class="fa fa-chevron-up"></i>{{_('收起')}}
+    </a>
+</div>
+
+<hr>
+<div class="panel-body">
+    <div class="pull-right">
+        <a v-if="cloth_editing" class="osr-pointer osr-color-secondary" v-on:click="pack_up_cloth_edit()">
+             <i class="fa fa-chevron-up"></i>{{_('收起')}}
+        </a>
+        <a v-else class="osr-pointer osr-color-secondary" v-on:click="pack_up_cloth_edit()">
+             <i class="fa fa-edit"></i>{{_('编辑')}}
+        </a>
+    </div>
+
+    <h4>{{_("成分")}}</h4>
+    <span v-for="v in goods.cloths">
+        {[v.name]}: <span class="osr-color-default">{[v.per]}%</span>
+        <i v-if="cloth_editing" v-on:click="del_cloth(v)" class="osr-pointer osr-color-danger fa fa-close"></i>
+        &nbsp;
+    </span>
+
+    <div v-if="cloth_editing">
+        <div class="form-group">
+            <label>
+            <input name="new_cloth_name" type="text" class="form-control osr-input" v-model="new_cloth.name"
+                   placeholder="{{_('名称')}}" data-bv-notempty-message="{{_('不能为空')}}" required/>
+                <input name="new_cloth_per" type="text" class="form-control osr-input" v-model="new_cloth.per"
+                   placeholder="{{_('比例(0-100)')}}" data-bv-notempty-message="{{_('不能为空')}}" required/>
+            </label>
+            <button v-on:click="add_cloth()" class="btn-sm osr-btn btn btn-success ">{{_("添加")}}</button>
+        </div>
+        <div class="btn-group">
+            <button v-on:click="update_cloth()" class="btn btn-sm osr-btn btn-info">
+                {{_('保存修改')}}
+            </button>
+        </div>
+    </div>
+
+
+</div>
+
+<script>
+
+    function add_color(){
+        vue.goods.colors.push(vue.new_color);
+        vue.new_color = "";
+    }
+
+    function del_color(color){
+        vue.goods.colors = ArrayRemove(vue.goods.colors, color);
+    }
+
+     function add_size(){
+        vue.goods.sizes.push(vue.new_size);
+        vue.new_size = "";
+    }
+
+    function del_size(size){
+        vue.goods.sizes = ArrayRemove(vue.goods.sizes, size);
+    }
+
+    function update_property(property_name, key){
+        data = {
+            update_property:true,
+            goods_id:vue.goods_id,
+            property_name:property_name,
+            value:JSON.stringify(vue.goods[key])
+        }
+        var result = osrHttp("PUT","/api/plug/goods", data);
+        result.then(function (r) {
+              get_goods(vue.goods_id);
+        });
+    }
+
+    function update_other_pr(pr_key, unit_price, quantity){
+        //更新数量与单价
+        data = {
+            update_property:true,
+            goods_id:vue.goods_id,
+            property_name:"other",
+            value:JSON.stringify({key:pr_key, unit_price:unit_price,quantity:quantity })
+        }
+        var result = osrHttp("PUT","/api/plug/goods", data);
+        result.then(function (r) {
+              //window.location.href = window.location.pathname+ "?goods_id="+vue.goods_id;
+        });
+    }
+
+    function unified_update_other_pr(){
+        //统一更新数量与单价
+        data = {
+            update_property:true,
+            goods_id:vue.goods_id,
+            property_name:"other",
+            value:JSON.stringify({unit_price:vue.unified_price,quantity:vue.unified_quantity })
+        }
+
+        var result = osrHttp("PUT","/api/plug/goods", data);
+        result.then(function (r) {
+              get_goods(vue.goods_id);
+        });
+    }
+
+    function pack_up_pr_edit(){
+        vue.pr_editing = !vue.pr_editing;
+    }
+
+    function pack_up_pr_other_edit(){
+        vue.pr_other_editing = !vue.pr_other_editing;
+    }
+
+    //cloth
+    function add_cloth(){
+        vue.goods.cloths.push(vue.new_cloth);
+        vue.new_cloth = {name:"", per:""};
+    }
+
+    function del_cloth(cloth){
+        vue.goods.cloths = ArrayRemove(vue.goods.cloths, cloth);
+    }
+
+    function pack_up_cloth_edit(){
+        vue.cloth_editing = !vue.cloth_editing;
+    }
+
+    function update_cloth(pr_key, unit_price, quantity){
+        data = {
+            update_cloth:true,
+            goods_id:vue.goods_id,
+            value:JSON.stringify(vue.goods.cloths)
+        }
+        var result = osrHttp("PUT","/api/plug/goods", data);
+        result.then(function (r) {
+            pack_up_cloth_edit()
+        });
+    }
+
+
+</script>
