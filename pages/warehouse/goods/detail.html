@@ -1,0 +1,186 @@
+{% extends "warehouse-theme/pages/based/based.html" %}
+{% block title %}{{_("商品详情-")}}{% endblock %}
+{% block content %}
+<!-- Date Picker -->
+<data id="goods_id" content="{{data.goods_id}}" hidden></data>
+
+<div id="app" v-cloak>
+    <div class="row osr-edit-page">
+        <div class="col-md-12 osr-col-xs-12">
+            <section class="osr-panel">
+              <header class="panel-heading tab-bg-dark-navy-blue osr-panel-heading">
+                  <strong >{{_("商品详情")}}</strong>
+                  <a :href="'/warehouse/goods/edit'+url_s" class="osr-color-success">
+                      {{_("点击编辑")}}
+                  </a>
+                  <a class="pull-right"
+                     href="/warehouse/goods?page={{data.fp}}&type={{data.ftype}}&category={{data.fcategory}}">
+                        <i class="fa fa-arrow-circle-left"></i>
+                      {{_("返回")}}
+                  </a>
+              </header>
+
+               <div class="panel-body">
+
+                    <h4 class="osr-color-success">{{_("基础信息")}}</h4>
+                    <span v-if="goods.goods_type_id===gt._id" v-for="gt in goods_types">
+                        <span>{{_("商品类别")}}: </span>{[gt.name]}
+                    </span>
+                    &nbsp;
+                    <span v-if="goods.category_id===gt._id" v-for="gt in categorys">
+                        <span>{{_("分类")}}: </span>{[gt.name]}
+                    </span>
+                    &nbsp;
+                    <span v-if="goods.business_id===gt._id" v-for="gt in businesses">
+                        <span>{{_("商品品牌")}}: </span>{[gt.name]}&nbsp;
+                    </span>
+                    <br>
+                    <span>
+                        <span>{{_("商品货号")}}: </span>
+                        <span  v-if="goods.customize_id" class="osr-color-default">
+                            {[goods.customize_id]}
+                        </span>
+                        <span  v-else>{{_("暂无")}}</span>
+
+                    </span>
+                    &nbsp;
+                    <span>
+                        <span>{{_("性别")}}: </span>
+                        <span  v-if="goods.gender=='n'">{{_("中性")}}</span>
+                        <span  v-if="goods.gender=='m'">{{_("男")}}</span>
+                        <span  v-if="goods.gender=='f'">{{_("女")}}</span>
+                    </span>
+                    &nbsp;
+                    <span>
+                        <span>{{_("上市时间")}}: </span>{[goods.time_to_market]}
+                    </span>
+
+                </div>
+                <hr>
+                <div class="panel-body">
+                    <h4 class="osr-color-success">{{_("颜色与尺寸")}}</h4>
+                    <span class="osr-color-secondary">{[goods.colors.length]}{{_("个色")}} </span>
+                    <span v-for="color in goods.colors">
+                        {[color]};
+                        &nbsp;
+                    </span>
+
+                    <br>
+                    <span class="osr-color-secondary">{[goods.sizes.length]}{{_("个尺寸")}} </span>
+                    <span v-for="size in goods.sizes">
+                        {[size]};
+                        &nbsp;
+                    </span>
+                </div>
+                <hr>
+                <div class="panel-body">
+                    <h4 class="osr-color-success">{{_("单价与库存")}}</h4>
+                    <span>总库存:
+                        <span class="osr-color-default" v-if="goods.total">{[goods.total]}</span>
+                        <span class="osr-color-danger" v-else>{[goods.total]}</span>
+                    </span>
+                    &nbsp;&nbsp;
+                    <span>总销量:
+                        <span class="osr-color-default">{[goods.total_sales]}</span>
+                    </span>
+                    <br>
+                    <span v-for="(pr,index) in goods.property">
+                        尺寸: <span class="osr-color-default">{[pr.size]}</span>&nbsp;
+                        颜色: <span class="osr-color-default">{[pr.color]}</span>&nbsp;
+                        单价: <span class="osr-color-default">{[pr.unit_price]}</span>&nbsp;
+                        库存: <span class="osr-color-default" v-if="pr.quantity">{[pr.quantity]}</span>
+                        <span class="osr-color-danger" v-else>{[pr.quantity]}</span>
+                        销量: <span class="osr-color-default">{[pr.sales]}</span>&nbsp;
+                        <br>
+                    </span>
+                </div>
+                <hr>
+                <div class="panel-body">
+                    <h4 class="osr-color-success">{{_("成分")}}</h4>
+                    <span v-for="v in goods.cloths">
+                        {[v.name]}: <span class="osr-color-default">{[v.per]}%</span>
+                        <i v-if="cloth_editing" v-on:click="del_cloth(v)" class="osr-pointer osr-color-danger fa fa-close"></i>
+                        &nbsp;
+                    </span>
+                </div>
+            </section>
+      </div>
+    </div>
+</div>
+<script>
+
+    var vue = new Vue({
+      el: '#app',
+      delimiters:['{[', ']}'],
+      data:{
+            goods:{
+                customize_id:null,
+                property:{},
+                cloth:{},
+                gender:"n",
+                introduction:"",
+                category_id:null,
+                goods_type_id:null,
+                business_id:null,
+                time_to_market:""
+            },
+            goods_types:{},
+            categorys:{},
+            businesses:{},
+            url_s:""
+      }
+    })
+
+    // 页面一加载完就自动执行
+    var goods_id = null;
+    $(document).ready(function(){
+
+        // 获取商品信息
+        vue.goods_id = $("#goods_id").attr("content");
+        get_goods(vue.goods_id);
+        vue.url_s = window.location.search;
+    });
+
+    function get_goods(id){
+        var result = osrHttp("GET","/api/plug/goods",{goods_id:id}, args={not_prompt:true});
+        result.then(function (r) {
+              vue.goods = r.data.goods;
+              get_types();
+              vue.time_to_market_y = vue.goods.time_to_market/100;
+              vue.time_to_market_m = vue.goods.time_to_market%100;
+        });
+    }
+
+    function get_types(){
+         var result = osrHttp("GET","/api/plug/goods/type", {}, args={not_prompt:true});
+         result.then(function (r) {
+            vue.goods_types = r.data.types;
+            if(vue.goods_types.length){
+                get_categorys();
+            }
+         });
+    }
+
+    function get_categorys(){
+        var data = {goods_type_id:vue.goods.goods_type_id};
+         var result = osrHttp("GET","/api/plug/goods/category", data, args={not_prompt:true});
+
+         result.then(function (r) {
+            vue.categorys = r.data.categorys;
+            get_businesses();
+         });
+    }
+
+    function get_businesses(){
+        var data = {goods_type_id:vue.goods.goods_type_id};
+         var result = osrHttp("GET","/api/plug/goods/business", data, args={not_prompt:true});
+
+         result.then(function (r) {
+            vue.businesses = r.data.businesses;
+         });
+    }
+
+
+
+</script>
+{% endblock %}

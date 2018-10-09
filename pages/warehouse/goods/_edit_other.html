@@ -1,15 +1,15 @@
 <!--属性-->
 
 <div v-if="!pr_editing"　class="panel-body">
-    <h4>{{_("颜色与尺寸")}}</h4>
-    <span class="osr-color-success">{[goods.colors.length]}{{_("个色")}} </span>
+    <h4 class="osr-color-success">{{_("颜色与尺寸")}}</h4>
+    <span class="osr-color-secondary">{[goods.colors.length]}{{_("个色")}} </span>
     <span v-for="color in goods.colors">
         {[color]};
         &nbsp;
     </span>
 
     <br>
-    <span class="osr-color-success">{[goods.sizes.length]}{{_("个尺寸")}} </span>
+    <span class="osr-color-secondary">{[goods.sizes.length]}{{_("个尺寸")}} </span>
     <span v-for="size in goods.sizes">
         {[size]};
         &nbsp;
@@ -29,7 +29,7 @@
         </a>
     </div>
 
-    <h4>{{_("颜色属性")}}</h4>
+    <h4 class="osr-color-success">{{_("颜色属性")}}</h4>
     <span v-for="color in goods.colors">
         {[color]}
         <i v-on:click="del_color(color)" class="osr-pointer osr-color-danger fa fa-close"></i>
@@ -48,7 +48,7 @@
         </button>
     </div>
     <br>
-     <h4>{{_("大小属性")}}</h4>
+     <h4 class="osr-color-success">{{_("大小属性")}}</h4>
     <span v-for="size in goods.sizes">
         {[size]}
         <i v-on:click="del_size(size)" class="osr-pointer osr-color-danger fa fa-close"></i>
@@ -80,25 +80,31 @@
         </a>
     </div>
 
-    <h4>{{_("单价与数量")}}</h4>
-    <div>总库存:
+    <h4 class="osr-color-success">{{_("单价与库存")}}</h4>
+    <span>总库存:
         <span class="osr-color-default" v-if="goods.total">{[goods.total]}</span>
         <span class="osr-color-danger" v-else>{[goods.total]}</span>
-    </div>
+    </span>
+    &nbsp;&nbsp;
+    <span>总销量:
+        <span class="osr-color-default">{[goods.total_sales]}</span>
+    </span>
+    <br>
     <span v-if="pr_other_editing">
-        单价
+        <span class="osr-color-danger">{{_('当前页面修改的商品数量不统计到 [销量] 数据中')}}</span><br>
         <label>
-
+            {{_('统一单价')}}
             <input name="new_price" type="text" class="form-control osr-input" v-model="unified_price"
                    placeholder="{{_('单价')}}"/>
         </label>
-        数量
+
         <label>
+            {{_('统一数量')}}
             <input name="new_quantity" type="text" class="form-control osr-input" v-model="unified_quantity"
-                   placeholder="{{_('数量')}}"/>
+                   placeholder="{{_('库存')}}"/>
         </label>
         <a v-on:click="warning_modal({msg:'{{_('确定一次性修改')}}'}, 'unified_update_other_pr')" class="btn btn-sm osr-btn btn-warning">
-            {{_('统一修改')}}
+            {{_('全部修改')}}
         </a>
         <br>
     </span>
@@ -107,21 +113,21 @@
         颜色: <span class="osr-color-default">{[pr.color]}</span>&nbsp;
         <span v-if="!pr_other_editing">
             单价: <span class="osr-color-default">{[pr.unit_price]}</span>&nbsp;
-            数量: <span class="osr-color-default" v-if="pr.quantity">{[pr.quantity]}</span>
+            库存: <span class="osr-color-default" v-if="pr.quantity">{[pr.quantity]}</span>
             <span class="osr-color-danger" v-else>{[pr.quantity]}</span>
         </span>
         <span v-else>
             <br>
-            单价
             <label>
-
+                单价
                 <input name="new_price" type="text" class="form-control osr-input" v-model="pr.unit_price" v-value="pr.unit_price"
                        placeholder="{{_('单价')}}"/>
             </label>
-            数量
+
             <label>
+                库存
                 <input name="new_quantity" type="text" class="form-control osr-input" v-model="pr.quantity" v-value="pr.quantity"
-                       placeholder="{{_('数量')}}"/>
+                       placeholder="{{_('库存')}}"/>
             </label>
 
             <a v-on:click="update_other_pr(index, pr.unit_price, pr.quantity)" class="btn btn-sm osr-btn btn-info">
@@ -147,7 +153,7 @@
         </a>
     </div>
 
-    <h4>{{_("成分")}}</h4>
+    <h4 class="osr-color-success">{{_("成分")}}</h4>
     <span v-for="v in goods.cloths">
         {[v.name]}: <span class="osr-color-default">{[v.per]}%</span>
         <i v-if="cloth_editing" v-on:click="del_cloth(v)" class="osr-pointer osr-color-danger fa fa-close"></i>
@@ -157,8 +163,12 @@
     <div v-if="cloth_editing">
         <div class="form-group">
             <label>
+                名称
             <input name="new_cloth_name" type="text" class="form-control osr-input" v-model="new_cloth.name"
                    placeholder="{{_('名称')}}" data-bv-notempty-message="{{_('不能为空')}}" required/>
+            </label>
+            <label>
+                比例%(1-100)
                 <input name="new_cloth_per" type="text" class="form-control osr-input" v-model="new_cloth.per"
                    placeholder="{{_('比例(0-100)')}}" data-bv-notempty-message="{{_('不能为空')}}" required/>
             </label>

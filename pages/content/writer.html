@@ -1,4 +1,4 @@
-{% extends "osr-style/pages/based/based.html" %}
+{% extends "warehouse-theme/pages/based/based.html" %}
 {% block title %}{{_('写点什么')}}-{% endblock %}
 {% block content %}
 <data id="post_id" content="{{data.id}}"></data>
@@ -78,13 +78,13 @@
             <!--模态框-->
         </div>
         {% if data.editor == "markdown" %}
-            {% include 'osr-style/pages/module/editor/markdown.html' %}
+            {% include 'warehouse-theme/pages/module/editor/markdown.html' %}
         {% elif data.editor == "rich_text" %}
-            {% include 'osr-style/pages/module/editor/richtext_atc_edit.html' %}
+            {% include 'warehouse-theme/pages/module/editor/richtext_atc_edit.html' %}
         {% elif current_user.editor == "rich_text" %}
-            {% include 'osr-style/pages/module/editor/richtext_atc_edit.html' %}
+            {% include 'warehouse-theme/pages/module/editor/richtext_atc_edit.html' %}
         {% else %}
-            {% include 'osr-style/pages/module/editor/markdown.html' %}
+            {% include 'warehouse-theme/pages/module/editor/markdown.html' %}
         {% endif %}
         <br>
         <div id="app-2" style="width:100%">

@@ -1,14 +1,15 @@
-{% extends "osr-style/pages/based/based.html" %}
-{% block title %}{{_('商家品牌')}}-{% endblock %}
+{% extends "warehouse-theme/pages/based/based.html" %}
+{% block title %}{{_('商品细分类')}}-{% endblock %}
 {% block content %}
 <div id="app" v-cloak>
+
     <div class="row osr-edit-page">
         <div class="col-md-12 osr-col-xs-12">
             <section class="osr-panel">
               <header class="panel-heading tab-bg-dark-navy-blue osr-panel-heading">
-                  <strong>{{_("商家品牌")}}</strong>
+                  <strong>{{_("商品分类")}}</strong>
                   <a class="pull-right"
-                     href="/goods/setting">
+                     href="/warehouse">
                         <i class="fa fa-arrow-circle-left"></i>
                       {{_("返回")}}
                   </a>
@@ -16,38 +17,31 @@
 
               <div class="panel-body">
                   <div class="text-center">
+
                     <div class="input-group form-group">
                         <select id="type" class="form-control osr-form-control" name="type" @change="switch_type($event.target.value)">
                           <option  v-if="curren_type._id===type._id" v-for="type in types" v-bind:value =type._id selected>{[type.name]} </option>
                           <option  v-if="curren_type._id!==type._id" v-for="type in types" v-bind:value =type._id>{[type.name]} </option>
                         </select>
-                        <a class="btn osr-btn-link" href="/goods/type">
+                        <a class="btn osr-btn-link" href="/warehouse/type">
                           <i class="fa fa-cog"></i>
                         </a>
                     </div>
                       <p>
 
-                    <div v-for="business in businesses" class="form-group">
-                      <label>
-                        <input name="name" type="text" class="form-control osr-input" v-model="business.name"
-                          data-bv-notempty-message="{{_('不能为空')}}" placeholder="{{_('商家品牌')}}" required/>
-                        <input name="mobile_phone" type="text" class="form-control osr-input" v-model="business.mobile_phone"
-                               placeholder="{{_('联系电话')}}" />
-                        <input name="addr" type="text" class="form-control osr-input" v-model="business.addr"
-                               placeholder="{{_('地址')}}"/>
-                          </label>
-                      <button v-on:click="update(business._id, business.name,business.mobile_phone,business.addr)" class="btn-sm osr-btn btn btn-info">{{_("保存")}}</button>
-                        <button v-on:click="warning_modal(null, 'del', business._id)" class="btn-sm osr-btn btn btn-danger" >{{_("删除")}}</button>
+                    <div v-for="category in categorys" class="form-group">
+                        <label>
+                        <input name="name" type="text" class="form-control osr-input" v-model="category.name"
+                          data-bv-notempty-message="{{_('不能为空')}}" placeholder="{{_('分类名称')}}" required/>
+                        </label>
+                        <button v-on:click="update(category._id, category.name)" class="btn-sm osr-btn btn btn-info">{{_("保存")}}</button>
+                        <button v-on:click="warning_modal(null, 'del', category._id)" class="btn-sm osr-btn btn btn-danger" >{{_("删除")}}</button>
                     </div>
 
                     <div class="form-group">
                         <label>
-                        <input name="new_name" type="text" class="form-control osr-input" v-model="new_business"
-                               placeholder="{{_('商家品牌')}}" data-bv-notempty-message="{{_('不能为空')}}" required/>
-                        <input name="mobile_phone" type="text" class="form-control osr-input" v-model="mobile_phone"
-                               placeholder="{{_('联系电话')}}" />
-                        <input name="addr" type="text" class="form-control osr-input" v-model="addr"
-                               placeholder="{{_('地址')}}"/>
+                        <input name="new_name" type="text" class="form-control osr-input" v-model="new_category"
+                               placeholder="{{_('分类名称')}}" data-bv-notempty-message="{{_('不能为空')}}" required/>
                         </label>
                         <button v-on:click="add()" class="btn-sm osr-btn btn btn-success osr-submit-btn">{{_("添加")}}</button>
                          <button class="btn-sm osr-btn btn btn-default disabled">{{_("删除")}}</button>
@@ -65,10 +59,8 @@
       data:{
         types:[],
         curren_type:null,
-        businesses:[],
-        new_business:"",
-        mobile_phone:"",
-        addr:"",
+        categorys:[],
+        new_category:"",
         single_type:false
       },
       methods: {show_btn:show_btn}
@@ -96,17 +88,17 @@
             vue.types = r.data.types;
             if(!vue.curren_type){
                 vue.curren_type = vue.types[0]._id;
-                get_businesses();
+                get_categorys();
             }
          });
     }
 
-    function get_businesses(){
+    function get_categorys(){
         var data = {goods_type_id:vue.curren_type};
-         var result = osrHttp("GET","/api/plug/goods/business", data, args={not_prompt:true});
+         var result = osrHttp("GET","/api/plug/goods/category", data, args={not_prompt:true});
 
          result.then(function (r) {
-            vue.businesses = r.data.businesses;
+            vue.categorys = r.data.categorys;
          });
     }
 
@@ -114,39 +106,33 @@
     function add(){
         formValidate();
         var d = {
-            name:vue.new_business,
-            mobile_phone:vue.mobile_phone,
-            addr:vue.addr,
+            name:vue.new_category,
             goods_type_id:vue.curren_type
         }
         // 提交数据
 
-        var result = osrHttp("POST", "/api/plug/goods/business", d);
+        var result = osrHttp("POST", "/api/plug/goods/category", d);
         result.then(function (r) {
             if (r.status=="success" && r.data.msg_type=="s"){
-                get_businesses();
-                vue.new_business = "";
-                vue.mobile_phone = "";
-                vue.addr = "";
+                get_categorys();
+                vue.new_category = "";
             }
         });
 
     }
 
-    function update(id, name,mobile_phone,addr ){
+    function update(id, name){
         formValidate();
         var d = {
                  name:name,
                  goods_type_id:vue.curren_type,
-                 mobile_phone:mobile_phone,
-                 addr:addr,
                  id:id
         }
         // 提交数据
-        var result = osrHttp("PUT", "/api/plug/goods/business", d);
+        var result = osrHttp("PUT", "/api/plug/goods/category", d);
         result.then(function (r) {
             if (r.status=="success" && r.data.msg_type=="s"){
-                get_businesses();
+                get_categorys();
             }
         });
 
@@ -158,17 +144,17 @@
                  ids:JSON.stringify([id])
         }
         // 提交数据
-        var result = osrHttp("DELETE", "/api/plug/goods/business", d);
+        var result = osrHttp("DELETE", "/api/plug/goods/category", d);
         result.then(function (r) {
             if (r.status=="success" && r.data.msg_type=="s"){
-                get_businesses();
+                get_categorys();
             }
         });
     }
 
     function switch_type(value){
         vue.curren_type = value;
-        get_businesses();
+        get_categorys();
     }
 
 

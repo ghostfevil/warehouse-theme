@@ -17,8 +17,8 @@
     <meta name="author" content="Allen Woo"/>
     <meta name="viewport" content="width=drvice-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;">
 
-    {% include "osr-style/pages/based/css.html" %}
-    {% include "osr-style/pages/based/top-js.html" %}
+    {% include "warehouse-theme/pages/based/css.html" %}
+    {% include "warehouse-theme/pages/based/top-js.html" %}
 
     <!--后端设置嵌入代码-->
     {{g.site_global.site_config.HEAD_CODE | safe }}
@@ -29,11 +29,11 @@
 {% block body %}
 <body class="skin-black">
 
-    {% include "osr-style/pages/based/header_bar.html" %}
+    {% include "warehouse-theme/pages/based/header_bar.html" %}
     <!--移动端顶部bar会固定, 以下用于防止bar遮挡掉内容-->
     <div class="visible-xs" style="padding-top:56px;"></div>
     <div class="wrapper row-offcanvas row-offcanvas-left">
-        {% include "osr-style/pages/based/_m_left_menu.html" %}
+        {% include "warehouse-theme/pages/based/_m_left_menu.html" %}
         <!-- 右侧, 包含页面的导航栏和内容 -->
         <div>
             <section class="osr-content content">
@@ -42,17 +42,17 @@
                 <!--//消息显示位置-->
                 {% block content %}{% endblock %}
             </section>
-            {% include "osr-style/pages/based/footer.html" %}
+            {% include "warehouse-theme/pages/based/footer.html" %}
         </div>
         <!-- //右侧, 包含页面的导航栏和内容 -->
     </div>
-    {% include "osr-style/pages/based/footer-js.html" %}
+    {% include "warehouse-theme/pages/based/footer-js.html" %}
     <!--后端设置嵌入代码-->
     {{g.site_global.site_config.FOOTER_CODE | safe }}
     <!--后端设置嵌入代码-->
 </body>
 {% endblock %}
 
-{% include 'osr-style/pages/based/msg_box.html' %}
-{% include 'osr-style/pages/based/js_tr.html' %}
+{% include 'warehouse-theme/pages/based/msg_box.html' %}
+{% include 'warehouse-theme/pages/based/js_tr.html' %}
 </html>

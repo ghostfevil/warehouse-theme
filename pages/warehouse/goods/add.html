@@ -1,4 +1,4 @@
-{% extends "osr-style/pages/based/based.html" %}
+{% extends "warehouse-theme/pages/based/based.html" %}
 {% block title %}{{_("添加商品-")}}{% endblock %}
 {% block content %}
 <!-- Date Picker -->
@@ -12,7 +12,7 @@
               <header class="panel-heading tab-bg-dark-navy-blue osr-panel-heading">
                   <strong>{{_("添加商品")}}</strong>
                   <a class="pull-right"
-                     href="/goods/setting">
+                     href="/warehouse">
                         <i class="fa fa-arrow-circle-left"></i>
                       {{_("返回")}}
                   </a>
@@ -31,7 +31,7 @@
                       <option  v-if="goods.goods_type_id===gt._id" v-for="gt in goods_types" v-bind:value =gt._id selected>{[gt.name]} </option>
                       <option  v-if="goods.goods_type_id!==gt._id" v-for="gt in goods_types" v-bind:value =gt._id>{[gt.name]} </option>
                     </select>
-                    <a class="btn osr-btn-link" href="/content/category?type=post&ps={{data.status}}&peditor={{data.editor}}&pid={{data.id}}">
+                    <a class="btn osr-btn-link" href="/warehouse/type">
                       <i class="fa fa-cog"></i>
                     </a>
                 </div>
@@ -43,7 +43,7 @@
                       <option  v-if="goods.category_id===cg._id" v-for="cg in categorys" v-bind:value =cg._id selected>{[cg.name]} </option>
                       <option  v-if="goods.category_id!==cg._id" v-for="cg in categorys" v-bind:value =cg._id>{[cg.name]} </option>
                     </select>
-                    <a class="btn osr-btn-link" href="/content/category?type=post&ps={{data.status}}&peditor={{data.editor}}&pid={{data.id}}">
+                    <a class="btn osr-btn-link" href="/warehouse/category">
                       <i class="fa fa-cog"></i>
                     </a>
                 </div>
@@ -51,13 +51,13 @@
                 <br>
 
                 <!--厂家-->
-                <label>{{_("商品品牌")}}</label>
+                <label>{{_("品牌/上级商家")}}</label>
                 <div class="input-group">
                     <select id="business" class="form-control osr-form-control" name="business" @change="switch_business($event.target.value)">
                       <option  v-if="goods.business_id===bs._id" v-for="bs in businesses" v-bind:value =bs._id selected>{[bs.name]} </option>
                       <option  v-if="goods.business_id!==bs._id" v-for="bs in businesses" v-bind:value =bs._id>{[bs.name]} </option>
                     </select>
-                    <a class="btn osr-btn-link" href="/content/category?type=post&ps={{data.status}}&peditor={{data.editor}}&pid={{data.id}}">
+                    <a class="btn osr-btn-link" href="/warehouse/business">
                       <i class="fa fa-cog"></i>
                     </a>
                 </div>
@@ -245,7 +245,7 @@
         }
         var result = osrHttp("POST","/api/plug/goods", data);
         result.then(function (r) {
-              window.location.href = "/goods/edit?goods_id="+r.data.insered_id;
+              window.location.href = "/warehouse/goods/edit?goods_id="+r.data.insered_id;
         });
     }
 </script>

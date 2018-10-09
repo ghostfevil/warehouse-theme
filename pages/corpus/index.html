@@ -1,4 +1,4 @@
-{% extends "osr-style/pages/based/based.html" %}
+{% extends "warehouse-theme/pages/based/based.html" %}
 {% block title %}{{_("文集")}}-{% endblock %}
 {% block content %}
 <div id="app" class="row osr-page" v-cloak>
@@ -32,12 +32,12 @@
                     </li>
                 </ul>
             </header>
-            {% include 'osr-style/pages/user/post/_user_posts.html' %}
+            {% include 'warehouse-theme/pages/user/post/_user_posts.html' %}
 
         </div>
-        {% include 'osr-style/pages/user/_self_introduction.html' %}
+        {% include 'warehouse-theme/pages/user/_self_introduction.html' %}
     </section>
 
 </div>
-{% include 'osr-style/pages/corpus/_script_js.html' %}
+{% include 'warehouse-theme/pages/corpus/_script_js.html' %}
 {% endblock %}

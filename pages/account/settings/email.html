@@ -1,4 +1,4 @@
-{% extends "osr-style/pages/based/based.html" %}
+{% extends "warehouse-theme/pages/based/based.html" %}
 {% block title %}{{_("邮箱修改")}}-{% endblock %}
 {% block content %}
 <div id="app" class="row osr-edit-page" v-cloak>
@@ -42,7 +42,7 @@
                        data-bv-stringLength-message="{{_('验证码错误')}}" required/>
             </div>
             <!--验证码区域-->
-          {% include 'osr-style/pages/account/settings/_send_code.html' %}
+          {% include 'warehouse-theme/pages/account/settings/_send_code.html' %}
         <button v-on:click="reset()" class="btn osr-btn btn-info osr-submit-btn">
             {{_('绑定新邮箱')}}
         </button>

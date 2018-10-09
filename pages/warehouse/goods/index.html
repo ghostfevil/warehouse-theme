@@ -1,0 +1,247 @@
+{% extends "warehouse-theme/pages/based/based.html" %}
+{% block title %}{{_("商品-")}}{% endblock %}
+{% block content %}
+<data id="type" content="{{data.type}}" hidden></data>
+<!-- Date Picker -->
+<div id="app" v-cloak>
+    <div class="row osr-edit-page">
+        <div class="col-md-12 osr-col-xs-12">
+            <section class="osr-panel">
+
+                <div class="input-group">
+                    <select id="category" class="form-control osr-form-control" name="category" @change="switch_category($event.target.value)">
+                      <option  v-if="!category_id" value ="" selected>{{_("全部")}} </option>
+                      <option  v-if="category_id===cg._id" v-for="cg in categorys" v-bind:value =cg._id selected>{[cg.name]} </option>
+                      <option  v-if="category_id!==cg._id" v-for="cg in categorys" v-bind:value =cg._id>{[cg.name]} </option>
+                      <option  v-if="category_id" value ="" selected>{{_("全部")}} </option>
+                    </select>
+                    <a class="btn osr-btn-link" href="/warehouse/category">
+                      <i class="fa fa-cog"></i>
+                    </a>
+                </div>
+
+
+                <ul class="osr-list-group">
+                    <li class="osr-list-group-item have-img" v-for="gd in goods.datas">
+                         <!-- 图片-->
+                           <a  class="wrap-img pull-right" target="_blank" ></a>
+                         <!-- //图片-->
+                          <div class="item-content">
+                              <div class="list-author">
+                                  <a v-if="gd.total>5" class="osr-color-success"
+                                  :href="'/warehouse/goods/detail?goods_id='+gd._id+'&fp='+page+'&ftype='+goods_type_id+'&fcategory='+category_id">
+                                      ID:&nbsp{[gd.customize_id]}
+                                  </a>
+                                  <a v-else class="osr-color-warning"
+                                  :href="'/warehouse/goods/detail?goods_id='+gd._id+'&fp='+page+'&ftype='+goods_type_id+'&fcategory='+category_id">
+                                      ID:&nbsp{[gd.customize_id]}
+                                  </a>
+
+                                  <span  v-if="gd.gender=='m'" class="fa fa-mars osr-fa-gender-m" ></span>
+                                  <span  v-else-if="gd.gender=='f'" class="fa fa-venus osr-fa-gender-f"></span>
+                                  <span v-if="gd.update_time" class="osr-date">
+                                      <span>
+                                          <i class="fa fa-refresh" title="{{_('更新时间')}}"></i>
+                                          <i class="fa fa-clock-o"></i>&nbsp;{[gd.update_time | formatDate]}
+                                      </span>
+                                  </span>
+                              </div>
+                                <!--title-->
+                              <a  target="_blank"
+                                :href="'/warehouse/goods/detail?goods_id='+gd._id+'&fp='+page+'&ftype='+goods_type_id+'&fcategory='+category_id">
+                                  <span class="osr-color-default" v-if="gd.category_id==category._id" v-for="category in categorys">
+                                      {{_('分类')}}: {[category.name]}
+                                  </span>
+                                  <span class="osr-color-success">
+                                      {{_('颜色')}}: {[gd.colors.length]}
+                                  </span>
+                                 <span class="osr-color-info">
+                                      {{_('尺寸')}}: {[gd.sizes.length]}
+                                  </span>
+                                  <span class="osr-color-success">
+                                      {{_('库存')}}: {[gd.total]}
+                                  </span>
+                                  <span class="osr-color-default">
+                                      {{_('销量')}}: {[gd.total_sales]}
+                                  </span>
+
+                              </a>
+                                <!--title-->
+
+                              <!--摘要-->
+                              <div class="osr-text">
+                                  <span v-if="gd.business_id==business._id" v-for="business in businesses">
+                                      {{_('品牌/上级商家')}}:&nbsp{[business.name]}
+                                  </span>
+                                  <br>
+                                  <span >{[gd.introduction]}</span>
+                              </div>
+                                <!--摘要-->
+
+                              <div class="meta">
+                                  <span class="osr-date">
+                                      <span  >
+                                          <a class="osr-color-secondary"
+                                             :href="'/warehouse/goods/purchase-sales?goods_id='+gd._id+'&fp='+page+'&ftype='+goods_type_id+'&fcategory='+category_id">
+                                                <i class="fa fa-edit"></i> {{_('进销管理')}}
+                                          </a>&nbsp;
+                                          <a class="osr-color-secondary"
+                                             :href="'/warehouse/goods/edit?goods_id='+gd._id+'&fp='+page+'&ftype='+goods_type_id+'&fcategory='+category_id">
+                                                <i class="fa fa-edit"></i> {{_('编辑')}}
+                                          </a>&nbsp;
+                                        <a v-on:click="warning_modal(null,'del_goods', gd._id)" class="osr-color-danger osr-pointer">
+                                            <i class="fa fa-trash"></i> {{_('删除')}}
+                                        </a>
+                                      </span>
+                                 </span>
+                            </div>
+
+                          </div>
+                     </li>
+                </ul>
+
+                 <!-- m页面导航-->
+                <ul class="pager col-sm-12">
+                    <li   v-if="pages.last < pages.current_page && pages.last>0" class="previous">
+                        <a v-on:click="get_goods(goods_type_id,category_id,pages.last,sort,keyword)" class="osr-pointer">
+                            {{_("上一页")}}
+                        </a>
+                    </li>
+                     <span class="text-center osr-text" >{{_('第{[goods.current_page]}页/共{[goods.page_total]}页')}}</span>
+                    <li  v-if="pages.next > pages.current_page  && pages.next<=pages.page_total" class="next">
+                        <a v-on:click="get_goods(goods_type_id,category_id,pages.next,sort,keyword)" class="osr-pointer">
+                            {{_("下一页")}}
+                        </a>
+                    </li>
+                </ul>
+                <!-- //m页面导航-->
+
+            </section>
+      </div>
+    </div>
+</div>
+<script>
+
+    var vue = new Vue({
+      el: '#app',
+      delimiters:['{[', ']}'],
+      data:{
+            goods:[],
+            goods_type_id:"",
+            category_id:"",
+            goods_types:{},
+            categorys:{},
+            businesses:{},
+            pages:[],
+            page:1,
+            keyword:"",
+            sort:[["time_to_market", -1]]
+      },
+       filters: {
+            formatDate: function (time) {
+              return irrformatDate(time, "yyyy-MM-dd hh:mm");
+            }
+      }
+    })
+
+    // 页面一加载完就自动执行
+    $(document).ready(function(){
+
+        // 获取商品信息
+        var url_s = get_url_parameter()
+        vue.goods_type_id = get_obj_value(url_s, "type", vue.goods_type_id)
+        vue.category_id = get_obj_value(url_s, "category", vue.category_id)
+        vue.sort = get_obj_value(url_s, "sort", vue.sort)
+        vue.page = get_obj_value(url_s, "page", vue.page)
+
+        if(!vue.goods_type_id){
+            //跳转到仓库首页
+            window.location.href = "/warehouse";
+        }
+        get_goods(vue.goods_type_id,vue.category_id,vue.page,vue.sort,vue.keyword);
+
+    });
+
+    function get_goods(goods_type_id,category_id,page,sort,keyword){
+
+        vue.keyword = keyword;
+        vue.category_id = category_id;
+        vue.sort = sort;
+        vue.page = page;
+        vue.goods_type_id = goods_type_id
+        data = {
+            goods_type_id:vue.goods_type_id,
+            pre:10,
+            page:vue.page,
+            category_id:vue.category_id,
+            sort:vue.sort
+        }
+        var result = osrHttp("GET","/api/plug/goods", data, args={not_prompt:true});
+        result.then(function (r) {
+              vue.goods = r.data.goods;
+              get_types();
+              vue.pages = paging(page_total=vue.goods.page_total,current_page=vue.goods.current_page);
+        });
+
+        var url = window.location.pathname
+                    +"?page="+vue.page
+                    +"&type="+vue.goods_type_id
+                    +"&category="+vue.category_id
+                     +"&sort="+vue.sort;
+
+        if(vue.keyword){
+            url = url+'&keyword='+vue.keyword;
+        }
+        history_state(null, url);
+
+    }
+
+    function del_goods(id){
+
+        data = {
+            ids:JSON.stringify([id])
+        }
+        var result = osrHttp("DELETE","/api/plug/goods", data);
+        result.then(function (r) {
+              get_goods(vue.goods_type_id,vue.category_id,vue.page,vue.sort,vue.keyword);
+        });
+    }
+
+    function switch_category(value){
+        vue.category_id = value;
+        get_goods(vue.goods_type_id,vue.category_id,vue.page,vue.sort,vue.keyword);
+    }
+
+    function get_types(){
+         var result = osrHttp("GET","/api/plug/goods/type", {}, args={not_prompt:true});
+         result.then(function (r) {
+            vue.goods_types = r.data.types;
+            if(vue.goods_types.length){
+                get_categorys();
+            }
+         });
+    }
+
+    function get_categorys(){
+        var data = {goods_type_id:vue.goods_type_id};
+         var result = osrHttp("GET","/api/plug/goods/category", data, args={not_prompt:true});
+
+         result.then(function (r) {
+            vue.categorys = r.data.categorys;
+            get_businesses();
+         });
+    }
+
+    function get_businesses(){
+        var data = {goods_type_id:vue.goods_type_id};
+         var result = osrHttp("GET","/api/plug/goods/business", data, args={not_prompt:true});
+
+         result.then(function (r) {
+            vue.businesses = r.data.businesses;
+         });
+    }
+
+
+
+</script>
+{% endblock %}

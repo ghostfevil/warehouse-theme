@@ -1,4 +1,4 @@
-{% extends "osr-style/pages/based/based.html" %}
+{% extends "warehouse-theme/pages/based/based.html" %}
 {% block title %}{{_("编辑商品-")}}{% endblock %}
 {% block content %}
 <!-- Date Picker -->
@@ -10,14 +10,18 @@
             <section class="osr-panel">
               <header class="panel-heading tab-bg-dark-navy-blue osr-panel-heading">
                   <strong >{{_("编辑商品")}}</strong>
+                  <a href="/warehouse/goods/add" class="osr-color-success">
+                    {{_("点击添加商品")}}
+                  </a>&nbsp;
+
                   <a class="pull-right"
-                     href="/goods/setting">
+                     href="/warehouse/goods?page={{data.fp}}&type={{data.ftype}}&category={{data.fcategory}}">
                         <i class="fa fa-arrow-circle-left"></i>
                       {{_("返回")}}
                   </a>
               </header>
-                {% include 'inventory-sys-theme/pages/goods/_edit_basic.html' %}
-                {% include 'inventory-sys-theme/pages/goods/_edit_other.html' %}
+                {% include 'warehouse-theme/pages/warehouse/goods/_edit_basic.html' %}
+                {% include 'warehouse-theme/pages/warehouse/goods/_edit_other.html' %}
        </section>
       </div>
     </div>
@@ -87,7 +91,8 @@
         result.then(function (r) {
               vue.goods = r.data.goods;
               get_types();
-              vue.time_to_market_y = vue.goods.time_to_market/100;
+              vue.time_to_market_m = vue.goods.time_to_market%100;
+              vue.time_to_market_y = (vue.goods.time_to_market-vue.time_to_market_m)/100;
               vue.time_to_market_m = vue.goods.time_to_market%100;
         });
     }

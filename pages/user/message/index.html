@@ -1,4 +1,4 @@
-{% extends "osr-style/pages/based/based.html" %}
+{% extends "warehouse-theme/pages/based/based.html" %}
 {% block title %}{{_("消息")}}-{% endblock %}
 {% block content %}
 <data id="type"  content="{{data.type}}"></data>
@@ -36,13 +36,13 @@
                 </ul>
             </header>
             <div id="notice">
-                {% include 'osr-style/pages/user/message/_notice.html' %}
+                {% include 'warehouse-theme/pages/user/message/_notice.html' %}
             </div>
             <div id="comment">
-                {% include 'osr-style/pages/user/message/_comment.html' %}
+                {% include 'warehouse-theme/pages/user/message/_comment.html' %}
             </div>
             <div id="private_letter">
-                {% include 'osr-style/pages/user/message/_private_letter.html' %}
+                {% include 'warehouse-theme/pages/user/message/_private_letter.html' %}
             </div>
 
             <!-- 页面导航-->

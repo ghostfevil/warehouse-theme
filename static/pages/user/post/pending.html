@@ -1,11 +1,11 @@
-{% extends "osr-style/pages/based/based.html" %}
+{% extends "warehouse-theme/pages/based/based.html" %}
 {% block title %}{{_("主页")}}-{% endblock %}
 {% block content %}
 <data id="user_id"  content="{{data.id}}"></data>
 <div id="app" class="row osr-page">
     <section class="osr-panel">
         <div class="col-sm-12">
-            {% include 'osr-style/pages/user/_user_info.html' %}
+            {% include 'warehouse-theme/pages/user/_user_info.html' %}
             <div>
                 <strong class="osr-color-success">
                     <i class="fa fa-align-left"></i> {[posts.data_total]}{{_("篇")}}
@@ -34,10 +34,10 @@
                     </li>
                 </ul>
             </header>
-            {% include 'osr-style/pages/user/post/_user_posts.html' %}
+            {% include 'warehouse-theme/pages/user/post/_user_posts.html' %}
         </div>
     </section>
 
 </div>
-{% include 'osr-style/pages/user/post/_script_js.html' %}
+{% include 'warehouse-theme/pages/user/post/_script_js.html' %}
 {% endblock %}

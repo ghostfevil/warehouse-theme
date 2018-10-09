@@ -1,4 +1,4 @@
-{% extends "osr-style/pages/based/based.html" %}
+{% extends "warehouse-theme/pages/based/based.html" %}
 {% block title %}{{_("文章")}}-{% endblock %}
 {% block content %}
 <div id="app" class="row osr-edit-page" v-cloak>
@@ -140,7 +140,7 @@
                 </span>
             </div>
             <br>
-            {% include "osr-style/pages/post/_comment.html" %}
+            {% include "warehouse-theme/pages/post/_comment.html" %}
         </div>
     </section>
     <!--举报模态-->
@@ -152,7 +152,7 @@
                     <h4 class="modal-title">{{_('文章举报')}}</h4>
                 </div>
                 <div class="modal-body">
-                {% include "osr-style/pages/based/_inform_modal_input.html" %}
+                {% include "warehouse-theme/pages/based/_inform_modal_input.html" %}
                 </div>
                 <div class="modal-footer">
                     <button class="btn osr-btn btn-info" type="button" data-dismiss="modal" aria-hidden="true">

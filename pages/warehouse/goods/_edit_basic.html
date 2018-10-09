@@ -1,6 +1,6 @@
 <!--显示-->
 <div v-if="!basic_editing" class="panel-body">
-    <h4>{{_("基础信息")}}</h4>
+    <h4 class="osr-color-success">{{_("基础信息")}}</h4>
     <div class="pull-right">
         <a class="osr-pointer osr-color-secondary" v-on:click="switch_editing()">
              <i class="fa fa-edit"></i> {{_('编辑')}}
@@ -15,7 +15,7 @@
     </span>
     &nbsp;
     <span v-if="goods.business_id===gt._id" v-for="gt in businesses">
-        <span>{{_("商品品牌")}}: </span>{[gt.name]}&nbsp;
+        <span>{{_("品牌/上级商家")}}: </span>{[gt.name]}&nbsp;
     </span>
     <br>
     <span>
@@ -61,9 +61,6 @@
           <option  v-if="goods.goods_type_id===gt._id" v-for="gt in goods_types" v-bind:value =gt._id selected>{[gt.name]} </option>
           <option  v-if="goods.goods_type_id!==gt._id" v-for="gt in goods_types" v-bind:value =gt._id>{[gt.name]} </option>
         </select>
-        <a class="btn osr-btn-link" href="/content/category?type=post&ps={{data.status}}&peditor={{data.editor}}&pid={{data.id}}">
-          <i class="fa fa-cog"></i>
-        </a>
     </div>
     <br>
     <!--细分分类-->
@@ -73,9 +70,6 @@
           <option  v-if="goods.category_id===cg._id" v-for="cg in categorys" v-bind:value =cg._id selected>{[cg.name]} </option>
           <option  v-if="goods.category_id!==cg._id" v-for="cg in categorys" v-bind:value =cg._id>{[cg.name]} </option>
         </select>
-        <a class="btn osr-btn-link" href="/content/category?type=post&ps={{data.status}}&peditor={{data.editor}}&pid={{data.id}}">
-          <i class="fa fa-cog"></i>
-        </a>
     </div>
 
     <br>
@@ -87,9 +81,6 @@
           <option  v-if="goods.business_id===bs._id" v-for="bs in businesses" v-bind:value =bs._id selected>{[bs.name]} </option>
           <option  v-if="goods.business_id!==bs._id" v-for="bs in businesses" v-bind:value =bs._id>{[bs.name]} </option>
         </select>
-        <a class="btn osr-btn-link" href="/content/category?type=post&ps={{data.status}}&peditor={{data.editor}}&pid={{data.id}}">
-          <i class="fa fa-cog"></i>
-        </a>
     </div>
     <br>
     <!--上市日期-->
@@ -193,7 +184,7 @@
             category_id:vue.goods.category_id,
             business_id:vue.goods.business_id,
             customize_id:vue.goods.customize_id,
-            time_to_market:vue.time_to_market_y*100+vue.time_to_market_m,
+            time_to_market:parseInt(vue.time_to_market_y+vue.time_to_market_m),
             gender:vue.goods.gender,
             introduction:vue.goods.introduction
         }

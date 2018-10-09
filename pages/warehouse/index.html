@@ -1,0 +1,92 @@
+{% extends "warehouse-theme/pages/based/based.html" %}
+{% block title %}{{_("仓库首页-")}}{% endblock %}
+{% block content %}
+<!-- Date Picker -->
+<div id="app" v-cloak>
+    <div class="row osr-edit-page">
+        <div class="col-md-12 osr-col-xs-12">
+            <section class="osr-panel">
+                <h4>{{_("查看商品")}}</h4>
+                <span v-for="type in goods_types">
+                    <a :href="'/warehouse/goods?type='+type._id" class="btn btn-sm osr-btn btn-success osr-submit-btn">{[type.name]}</a>
+                    &nbsp;
+                </span>
+            </section>
+            <section class="osr-panel">
+                <h4>{{_("商品管理")}}</h4>
+                <a href="/warehouse/goods/add" class="btn btn-sm osr-btn btn-info osr-submit-btn">
+                    {{_("添加商品")}}
+                </a>&nbsp;
+            </section>
+
+            <section class="osr-panel">
+                <h4>{{_("设置管理")}}</h4>
+                <a href="/warehouse/business" class="btn btn-sm osr-btn btn-info osr-submit-btn">
+                    {{_("商家品牌")}}
+                </a>&nbsp;
+                <a href="warehouse/type" class="btn btn-sm osr-btn btn-info osr-submit-btn">
+                    {{_("商品一级分类")}}
+                </a>&nbsp;
+                <a href="/warehouse/category" class="btn btn-sm osr-btn btn-info osr-submit-btn">
+                    {{_("商品二级分类")}}
+                </a>&nbsp;
+            </section>
+      </div>
+    </div>
+</div>
+<script>
+
+    var vue = new Vue({
+      el: '#app',
+      delimiters:['{[', ']}'],
+      data:{
+            goods:[],
+            goods_type_id:null,
+            goods_types:{},
+            categorys:{},
+            businesses:{},
+      },
+       filters: {
+            formatDate: function (time) {
+              return irrformatDate(time, "yyyy-MM-dd hh:mm");
+            }
+      }
+    })
+
+    // 页面一加载完就自动执行
+    $(document).ready(function(){
+        get_types()
+    });
+    function get_types(){
+         var result = osrHttp("GET","/api/plug/goods/type", {}, args={not_prompt:true});
+         result.then(function (r) {
+            vue.goods_types = r.data.types;
+            if(vue.goods_types.length){
+                get_categorys();
+            }
+         });
+    }
+
+    function get_categorys(){
+        var data = {goods_type_id:vue.goods_type_id};
+         var result = osrHttp("GET","/api/plug/goods/category", data, args={not_prompt:true});
+
+         result.then(function (r) {
+            vue.categorys = r.data.categorys;
+            get_businesses();
+         });
+    }
+
+    function get_businesses(){
+        var data = {goods_type_id:vue.goods_type_id};
+         var result = osrHttp("GET","/api/plug/goods/business", data, args={not_prompt:true});
+
+         result.then(function (r) {
+            vue.businesses = r.data.businesses;
+         });
+    }
+
+
+
+</script>
+{% endblock %}

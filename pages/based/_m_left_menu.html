@@ -18,6 +18,13 @@
                 </a>
             </li>
 
+             {% if current_user.is_authenticated %}
+                <li>
+                     <a class="lv1-a" href="/warehouse">
+                        {{_("仓库")}}
+                    </a>
+                </li>
+            {% endif %}
             <li>
                 <a class="lv1-a" href="javascript:;" data-target="#about-us" data-toggle="collapse">
                     <span>{{_("关于")}}</span>
