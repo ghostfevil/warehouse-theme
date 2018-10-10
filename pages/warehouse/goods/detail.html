@@ -99,7 +99,6 @@
                     <h4 class="osr-color-success">{{_("成分")}}</h4>
                     <span v-for="v in goods.cloths">
                         {[v.name]}: <span class="osr-color-default">{[v.per]}%</span>
-                        <i v-if="cloth_editing" v-on:click="del_cloth(v)" class="osr-pointer osr-color-danger fa fa-close"></i>
                         &nbsp;
                     </span>
                 </div>
