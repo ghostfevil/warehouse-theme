@@ -74,7 +74,7 @@
                                    <span v-if="gd.total>0" class="osr-color-success">{{_('库存')}}: {[gd.total]}</span>
                                   <span v-else class="osr-color-danger">{{_('库存')}}: {[gd.total]}</span>
                                     &nbsp;&nbsp;
-                                    <span class="osr-color-success">{{_('销量')}}: {[gd.total_sales]}</span>
+                                    <span class="osr-color-success">{{_('销量')}}: {[gd.total_sales]}</span><br>
                                   <span v-if="gd.business_id==business._id" v-for="business in businesses">
                                       {{_('品牌/上级商家')}}:&nbsp{[business.name]}
                                   </span>
