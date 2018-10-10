@@ -18,6 +18,10 @@
                     <a class="btn osr-btn-link" href="/warehouse/category">
                       <i class="fa fa-cog"></i>
                     </a>
+		        <a :href="'/warehouse/goods/add?category_id='+category_id+'&type_id='+goods_type_id"
+                   class="btn btn-sm osr-btn btn-success osr-submit-btn">
+                      {{_("添加")}}
+                  </a>
                 </div>
 
 
@@ -49,20 +53,17 @@
                                 <!--title-->
                               <a  target="_blank"
                                 :href="'/warehouse/goods/detail?goods_id='+gd._id+'&fp='+page+'&ftype='+goods_type_id+'&fcategory='+category_id">
-                                  <span class="osr-color-default" v-if="gd.category_id==category._id" v-for="category in categorys">
-                                      {{_('分类')}}: {[category.name]}
-                                  </span>
+                                  {{_('分类')}}:
+                                  <span class="osr-color-success" v-if="gd.category_id==category._id" v-for="category in categorys">
+                                      {[category.name]}
+                                  </span>&nbsp;
+                                   {{_('颜色')}}:
                                   <span class="osr-color-success">
-                                      {{_('颜色')}}: {[gd.colors.length]}
-                                  </span>
-                                 <span class="osr-color-info">
-                                      {{_('尺寸')}}: {[gd.sizes.length]}
-                                  </span>
-                                  <span class="osr-color-success">
-                                      {{_('库存')}}: {[gd.total]}
-                                  </span>
-                                  <span class="osr-color-default">
-                                      {{_('销量')}}: {[gd.total_sales]}
+                                     {[gd.colors.length]}
+                                  </span>&nbsp;
+                                  {{_('尺寸')}}:
+                                 <span class="osr-color-success">
+                                      {[gd.sizes.length]}
                                   </span>
 
                               </a>
@@ -70,6 +71,10 @@
 
                               <!--摘要-->
                               <div class="osr-text">
+                                   <span v-if="gd.total>0" class="osr-color-success">{{_('库存')}}: {[gd.total]}</span>
+                                  <span v-else class="osr-color-danger">{{_('库存')}}: {[gd.total]}</span>
+                                    &nbsp;&nbsp;
+                                    <span class="osr-color-success">{{_('销量')}}: {[gd.total_sales]}</span>
                                   <span v-if="gd.business_id==business._id" v-for="business in businesses">
                                       {{_('品牌/上级商家')}}:&nbsp{[business.name]}
                                   </span>

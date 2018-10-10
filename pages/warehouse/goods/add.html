@@ -135,9 +135,9 @@
                 cloth:{},
                 gender:"n",
                 introduction:"",
-                category_id:null,
-                goods_type_id:null,
-                business_id:null,
+                category_id:"",
+                goods_type_id:"",
+                business_id:"",
                 time_to_market:""
             },
             goods_types:{},
@@ -146,7 +146,7 @@
             years:[],
             months:[],
             time_to_market_y:0,
-            time_to_market_m:1,
+            time_to_market_m:1
       }
     })
 
@@ -164,6 +164,12 @@
         }
         vue.time_to_market_y = year;
         vue.time_to_market_m = date.getMonth();
+
+        //
+        var url_s = get_url_parameter()
+        vue.goods.goods_type_id = get_obj_value(url_s, "type_id", vue.goods_type_id);
+        vue.goods.category_id = get_obj_value(url_s, "category_id", vue.category_id)
+
     });
 
     function get_types(){
@@ -171,8 +177,9 @@
          result.then(function (r) {
             vue.goods_types = r.data.types;
             if(vue.goods_types.length){
-                vue.goods.goods_type_id = vue.goods_types[0]._id;
-                get_categorys();
+                vue.goods.goods_type_id = vue.goods.goods_type_id?vue.goods.goods_type_id:vue.goods_types[0]._id;
+
+                get_categorys()
 
             }
          });
@@ -185,9 +192,7 @@
          result.then(function (r) {
             vue.categorys = r.data.categorys;
             if(vue.categorys.length){
-                vue.goods.category_id = vue.categorys[0]._id;
-            }else{
-                vue.goods.category_id = "";
+                vue.goods.category_id = vue.goods.category_id?vue.goods.category_id:vue.categorys[0]._id;
             }
             get_businesses();
          });
@@ -201,8 +206,6 @@
             vue.businesses = r.data.businesses;
             if(vue.businesses.length){
                 vue.goods.business_id = vue.businesses[0]._id;
-            }else{
-                vue.goods.business_id = "";
             }
          });
     }

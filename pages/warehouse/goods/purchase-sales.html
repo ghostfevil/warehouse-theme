@@ -21,6 +21,7 @@
               </header>
 
                <div class="panel-body">
+                   <h4 class="osr-color-success">{[goods.customize_id]}</h4>
                     <span v-if="goods.goods_type_id===gt._id" v-for="gt in goods_types">
                         <span>{{_("商品类别")}}: </span>{[gt.name]}
                     </span>
@@ -28,20 +29,10 @@
                     <span v-if="goods.category_id===gt._id" v-for="gt in categorys">
                         <span>{{_("分类")}}: </span>{[gt.name]}
                     </span>
-                    &nbsp;
+                   <br>
                     <span v-if="goods.business_id===gt._id" v-for="gt in businesses">
                         <span>{{_("商品品牌")}}: </span>{[gt.name]}&nbsp;
                     </span>
-                    <br>
-                    <span>
-                        <span>{{_("商品货号")}}: </span>
-                        <span  v-if="goods.customize_id" class="osr-color-default">
-                            {[goods.customize_id]}
-                        </span>
-                        <span  v-else>{{_("暂无")}}</span>
-
-                    </span>
-                    &nbsp;
                     <span>
                         <span>{{_("性别")}}: </span>
                         <span  v-if="goods.gender=='n'">{{_("中性")}}</span>
@@ -52,9 +43,7 @@
                     <span>
                         <span>{{_("上市时间")}}: </span>{[goods.time_to_market]}
                     </span>
-
                 </div>
-                <hr>
                 <div class="panel-body">
                     <span>总库存:
                         <span class="osr-color-default" v-if="goods.total">{[goods.total]}</span>

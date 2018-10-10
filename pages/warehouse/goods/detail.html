@@ -22,7 +22,7 @@
 
                <div class="panel-body">
 
-                    <h4 class="osr-color-success">{{_("基础信息")}}</h4>
+                    <h4 class="osr-color-success">{{_("基础信息")}}-{[goods.customize_id]}</h4>
                     <span v-if="goods.goods_type_id===gt._id" v-for="gt in goods_types">
                         <span>{{_("商品类别")}}: </span>{[gt.name]}
                     </span>
