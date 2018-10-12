@@ -32,15 +32,21 @@
                          <!-- //图片-->
                           <div class="item-content">
                               <div class="list-author">
-                                  <a v-if="gd.total>5" class="osr-color-success"
-                                  :href="'/warehouse/goods/detail?goods_id='+gd._id+'&fp='+page+'&ftype='+goods_type_id+'&fcategory='+category_id">
-                                      ID:&nbsp{[gd.customize_id]}
-                                  </a>
-                                  <a v-else class="osr-color-warning"
-                                  :href="'/warehouse/goods/detail?goods_id='+gd._id+'&fp='+page+'&ftype='+goods_type_id+'&fcategory='+category_id">
-                                      ID:&nbsp{[gd.customize_id]}
-                                  </a>
+                                  <a :href="'/warehouse/goods/detail?goods_id='+gd._id+'&fp='+page+'&ftype='+goods_type_id+'&fcategory='+category_id">
 
+                                      {{_('库存')}}
+
+                                      <span v-if="gd.total<10 && gd.total>=0" class="osr-color-warning">[{{_('警')}}]</span>
+                                      <span v-if="gd.total<0" class="osr-color-danger">[{{_('欠')}}]</span>
+                                      <span class="osr-color-success">
+                                      :&nbsp;{[gd.total]}
+                                      </span>
+                                         &nbsp;
+                                      {{_('销量')}}
+                                      <span class="osr-color-success">
+                                      :&nbsp;{[gd.total_sales]}
+                                      </span>
+                                  </a>
                                   <span  v-if="gd.gender=='m'" class="fa fa-mars osr-fa-gender-m" ></span>
                                   <span  v-else-if="gd.gender=='f'" class="fa fa-venus osr-fa-gender-f"></span>
                                   <span v-if="gd.update_time" class="osr-date">
@@ -51,9 +57,14 @@
                                   </span>
                               </div>
                                 <!--title-->
-                              <a  target="_blank"
+                              <a class="osr-title" target="_blank"
                                 :href="'/warehouse/goods/detail?goods_id='+gd._id+'&fp='+page+'&ftype='+goods_type_id+'&fcategory='+category_id">
-                                  {{_('分类')}}:
+                                   {{_('货号')}}:&nbsp;{[gd.customize_id]}
+                              </a>
+                                <!--title-->
+                              <!--摘要-->
+                              <div class="osr-text">
+                                   {{_('分类')}}:
                                   <span class="osr-color-success" v-if="gd.category_id==category._id" v-for="category in categorys">
                                       {[category.name]}
                                   </span>&nbsp;
@@ -65,21 +76,29 @@
                                  <span class="osr-color-success">
                                       {[gd.sizes.length]}
                                   </span>
-
-                              </a>
-                                <!--title-->
-
-                              <!--摘要-->
-                              <div class="osr-text">
-                                   <span v-if="gd.total>0" class="osr-color-success">{{_('库存')}}: {[gd.total]}</span>
-                                  <span v-else class="osr-color-danger">{{_('库存')}}: {[gd.total]}</span>
-                                    &nbsp;&nbsp;
-                                    <span class="osr-color-success">{{_('销量')}}: {[gd.total_sales]}</span><br>
-                                  <span v-if="gd.business_id==business._id" v-for="business in businesses">
+                                  <div v-if="gd.inventory_warning">
+                                      {{_('存在库存问题的商品')}}:&nbsp;{[gd.inventory_warning]}<br>
+                                      <span v-for="pr in gd.property">
+                                          <span v-if="pr.quantity<0" class="osr-color-danger">
+                                              {{_('颜色')}}:{[pr.color]} &nbsp;{{_('尺寸')}}:{[pr.size]}
+                                              &nbsp;{{_('库存')}}{[pr.quantity]}[{{_('欠')}}]
+                                               <br>
+                                          </span>
+                                          <span v-if="pr.quantity>=0 && pr.quantity<10" class="osr-color-warning">
+                                              {{_('颜色')}}:{[pr.color]} &nbsp;{{_('尺寸')}}:{[pr.size]}
+                                              &nbsp;{{_('库存')}}:{[pr.quantity]}[{{_('警')}}]
+                                               <br>
+                                          </span>
+                                      </span>
+                                  </div>
+                                  <div v-if="gd.business_id==business._id" v-for="business in businesses">
                                       {{_('品牌/上级商家')}}:&nbsp{[business.name]}
-                                  </span>
-                                  <br>
-                                  <span >{[gd.introduction]}</span>
+                                      <br>
+                                  </div>
+                                  <div v-if="gd.introduction">
+                                      {{_("备注")}}:&nbsp;
+                                      {[gd.introduction]}
+                                  </div>
                               </div>
                                 <!--摘要-->
 
@@ -245,8 +264,6 @@
             vue.businesses = r.data.businesses;
          });
     }
-
-
 
 </script>
 {% endblock %}

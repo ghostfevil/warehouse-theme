@@ -167,10 +167,10 @@ function alert_msg(data){
             $('#msg-box').append($('#alert-success').html());
             $('#success-msg').attr('id', msg_id);
             $("#"+msg_id).find("#success-msg-content").text(data.msg);
-            var n = 3;//3s隐藏
+            var n = 1;//3s隐藏
             window.setInterval(
                 function(){
-                    if(!n){
+                    if(n<=0){
                         $('#'+msg_id).remove();
                         return;
                     };

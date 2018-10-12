@@ -85,11 +85,18 @@
                     </span>
                     <br>
                     <span v-for="(pr,index) in goods.property">
-                        尺寸: <span class="osr-color-default">{[pr.size]}</span>&nbsp;
                         颜色: <span class="osr-color-default">{[pr.color]}</span>&nbsp;
+                        尺寸: <span class="osr-color-default">{[pr.size]}</span>&nbsp;
                         单价: <span class="osr-color-default">{[pr.unit_price]}</span>&nbsp;
-                        库存: <span class="osr-color-default" v-if="pr.quantity">{[pr.quantity]}</span>
-                        <span class="osr-color-danger" v-else>{[pr.quantity]}</span>
+                        库存: <span class="osr-color-default" v-if="pr.quantity>10">
+                                {[pr.quantity]}
+                            </span>
+                        <span class="osr-color-warning" v-else-if="pr.quantity<10 && pr.quantity>=0">
+                            {[pr.quantity]}[{{_("警")}}]
+                        </span>
+                        <span class="osr-color-danger" v-else-if="pr.quantity<0">
+                            {[pr.quantity]}[{{_("欠")}}]
+                        </span>
                         销量: <span class="osr-color-default">{[pr.sales]}</span>&nbsp;
                         <br>
                     </span>

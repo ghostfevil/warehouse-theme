@@ -109,8 +109,8 @@
         <br>
     </span>
     <span v-for="(pr,index) in goods.property">
-        尺寸: <span class="osr-color-default">{[pr.size]}</span>&nbsp;
         颜色: <span class="osr-color-default">{[pr.color]}</span>&nbsp;
+        尺寸: <span class="osr-color-default">{[pr.size]}</span>
         <span v-if="!pr_other_editing">
             单价: <span class="osr-color-default">{[pr.unit_price]}</span>&nbsp;
             库存: <span class="osr-color-default" v-if="pr.quantity">{[pr.quantity]}</span>

@@ -58,6 +58,7 @@
     <label>{{_("商品类别")}}</label>
     <div class="input-group">
         <select id="goods_type" class="form-control osr-form-control" name="goods_type" @change="switch_type($event.target.value)">
+            <option  v-if="!goods.goods_type_id" value="" selected>{{_("无")}}</option>
           <option  v-if="goods.goods_type_id===gt._id" v-for="gt in goods_types" v-bind:value =gt._id selected>{[gt.name]} </option>
           <option  v-if="goods.goods_type_id!==gt._id" v-for="gt in goods_types" v-bind:value =gt._id>{[gt.name]} </option>
         </select>
@@ -67,6 +68,7 @@
     <label>{{_("小类")}}</label>
     <div class="input-group">
         <select id="category" class="form-control osr-form-control" name="category" @change="switch_category($event.target.value)">
+            <option  v-if="!goods.category_id" value="" selected>{{_("无")}}</option>
           <option  v-if="goods.category_id===cg._id" v-for="cg in categorys" v-bind:value =cg._id selected>{[cg.name]} </option>
           <option  v-if="goods.category_id!==cg._id" v-for="cg in categorys" v-bind:value =cg._id>{[cg.name]} </option>
         </select>
@@ -78,6 +80,7 @@
     <label>{{_("商品品牌")}}</label>
     <div class="input-group">
         <select id="business" class="form-control osr-form-control" name="business" @change="switch_business($event.target.value)">
+            <option  v-if="!goods.business_id" value="" selected>{{_("无")}}</option>
           <option  v-if="goods.business_id===bs._id" v-for="bs in businesses" v-bind:value =bs._id selected>{[bs.name]} </option>
           <option  v-if="goods.business_id!==bs._id" v-for="bs in businesses" v-bind:value =bs._id>{[bs.name]} </option>
         </select>
