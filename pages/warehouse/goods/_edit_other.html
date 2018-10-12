@@ -82,8 +82,11 @@
 
     <h4 class="osr-color-success">{{_("单价与库存")}}</h4>
     <span>总库存:
-        <span class="osr-color-default" v-if="goods.total">{[goods.total]}</span>
-        <span class="osr-color-danger" v-else>{[goods.total]}</span>
+        <span class="osr-color-default">{[goods.total]}</span>
+         <span v-if="goods.shortcoming" class="osr-color-danger">
+          &nbsp;
+          {{_('欠货')}}: {[goods.shortcoming]}
+      </span>
     </span>
     &nbsp;&nbsp;
     <span>总销量:

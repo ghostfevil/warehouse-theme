@@ -33,15 +33,15 @@
                           <div class="item-content">
                               <div class="list-author">
                                   <a :href="'/warehouse/goods/detail?goods_id='+gd._id+'&fp='+page+'&ftype='+goods_type_id+'&fcategory='+category_id">
-
                                       {{_('库存')}}
-
-                                      <span v-if="gd.total<10 && gd.total>=0" class="osr-color-warning">[{{_('警')}}]</span>
-                                      <span v-if="gd.total<0" class="osr-color-danger">[{{_('欠')}}]</span>
                                       <span class="osr-color-success">
                                       :&nbsp;{[gd.total]}
                                       </span>
-                                         &nbsp;
+                                      <span v-if="gd.shortcoming" class="osr-color-danger">
+                                          &nbsp;
+                                          {{_('欠货')}}: {[gd.shortcoming]}
+                                      </span>
+                                      &nbsp;
                                       {{_('销量')}}
                                       <span class="osr-color-success">
                                       :&nbsp;{[gd.total_sales]}
@@ -81,7 +81,7 @@
                                       <span v-for="pr in gd.property">
                                           <span v-if="pr.quantity<0" class="osr-color-danger">
                                               {{_('颜色')}}:{[pr.color]} &nbsp;{{_('尺寸')}}:{[pr.size]}
-                                              &nbsp;{{_('库存')}}{[pr.quantity]}[{{_('欠')}}]
+                                              &nbsp;{{_('库存')}}:{[pr.quantity]}[{{_('欠')}}]
                                                <br>
                                           </span>
                                           <span v-if="pr.quantity>=0 && pr.quantity<10" class="osr-color-warning">
