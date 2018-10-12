@@ -105,10 +105,7 @@
                               <div class="meta">
                                   <span class="osr-date">
                                       <span  >
-                                          <a class="osr-color-secondary"
-                                             :href="'/warehouse/goods/purchase-sales?goods_id='+gd._id+'&fp='+page+'&ftype='+goods_type_id+'&fcategory='+category_id">
-                                                <i class="fa fa-edit"></i> {{_('进销管理')}}
-                                          </a>&nbsp;
+
                                           <a class="osr-color-secondary"
                                              :href="'/warehouse/goods/edit?goods_id='+gd._id+'&fp='+page+'&ftype='+goods_type_id+'&fcategory='+category_id">
                                                 <i class="fa fa-edit"></i> {{_('编辑')}}
@@ -116,6 +113,10 @@
                                         <a v-on:click="warning_modal(null,'del_goods', gd._id)" class="osr-color-danger osr-pointer">
                                             <i class="fa fa-trash"></i> {{_('删除')}}
                                         </a>
+                                          <a class="pull-right osr-color-secondary"
+                                             :href="'/warehouse/goods/purchase-sales?goods_id='+gd._id+'&fp='+page+'&ftype='+goods_type_id+'&fcategory='+category_id">
+                                                <i class="fa fa-edit"></i> {{_('进销管理')}}
+                                          </a>&nbsp;
                                       </span>
                                  </span>
                             </div>
